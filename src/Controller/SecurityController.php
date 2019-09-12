@@ -51,13 +51,15 @@ class SecurityController extends AbstractController
         \Swift_Mailer $mailer,
         TokenGeneratorInterface $tokenGenerator
     ): Response
-    {   $user = new user();
-        $form = $this->createForm(ForgottenPasswordFormType::class, $user);
+    {
+        $userInfo = ['username' => null];
+        $form = $this->createForm(ForgottenPasswordFormType::class, $userInfo);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
 
-            $username = $form->get('username');
+        if ($form->isSubmitted() and $form->isValid()) {
 
+            $userInfo = $form->getData();
+            $username = $userInfo['username'];
             $entityManager = $this->getDoctrine()->getManager();
             $user = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
             /* @var $user User */
@@ -88,7 +90,7 @@ class SecurityController extends AbstractController
 
             $mailer->send($message);
 
-            $this->addFlash('notice', 'Mail envoyé');
+            $this->addFlash('notice', 'Mail sent');
 
             return $this->redirectToRoute('home');
         }
@@ -103,30 +105,27 @@ class SecurityController extends AbstractController
     public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder)
     {
         $form = $this->createForm(ResetPasswordFormType::class);
+        $form->handleRequest($request);
 
-        if ($request->isMethod('POST')) {
+        if ($form->isSubmitted() and $form->isValid()) {
+            $plainPassword = $form->get('plainPassword')->getData();
             $entityManager = $this->getDoctrine()->getManager();
-
-            $user = $entityManager->getRepository(User::class)->findOneBy(['resetToken'=> $token]);
+            $user = $entityManager->getRepository(User::class)->findOneBy(['resetToken' => $token]);
             /* @var $user User */
-
             if ($user === null) {
                 $this->addFlash('danger', 'Token Inconnu');
                 return $this->redirectToRoute('home');
             }
-
             $user->setResetToken(null);
-            $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('plainPassword')));
+            $user->setPassword($passwordEncoder->encodePassword($user, $plainPassword));
             $entityManager->flush();
-
             $this->addFlash('notice', 'Mot de passe mis à jour');
 
             return $this->redirectToRoute('home');
-        }else {
+        } else {
 
             return $this->render('security/reset_password.html.twig', ['token' => $token,
                 'resetPasswordForm' => $form->createView()]);
         }
-
     }
 }
