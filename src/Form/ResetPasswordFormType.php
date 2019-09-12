@@ -35,14 +35,13 @@ class ResetPasswordFormType extends AbstractType
                 ],
             ])
             ->add('token', HiddenType::class, ['data' => '{{ token }}'])
-            ->add('Save', SubmitType::class)
-        ;
+            ->add('save', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(array([
             'data_class' => User::class,
-        ]);
+        ]));
     }
 }

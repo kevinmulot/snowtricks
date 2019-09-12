@@ -15,13 +15,13 @@ class ForgottenPasswordFormType extends AbstractType
     {
         $builder
             ->add('username', TextType::class)
-            ->add('sendMail', SubmitType::class, ['label'=> 'Send Mail']);
+            ->add('sendMail', SubmitType::class, ['label' => 'Send Mail']);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
+        $resolver->setDefaults(array([
             'data_class' => User::class,
-        ]);
+        ]));
     }
 }
