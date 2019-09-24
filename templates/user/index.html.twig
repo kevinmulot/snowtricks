@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Hello ! </h1>
+        
+        <img src="/images/users/{{ profile.imagename }}" alt="profile picture">
+
+        <a class="btn btn-primary" href="{{ path('profile_edit', {id: profile.id}) }}">Edit Picture</a>
+        <ul>
+            <li>Username : {{ app.user.username }}</li>
+            <li>Email : {{ app.user.email }}</li>
+        </ul>
+        <a class="btn btn-primary" href="{{ path('user_edit', {id: app.user.id}) }}">Edit info</a>
+    </div>
+{% endblock %}
