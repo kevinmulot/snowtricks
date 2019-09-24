@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20190910090646 extends AbstractMigration
+final class Version20190924030637 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -23,9 +23,8 @@ final class Version20190910090646 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE comment CHANGE trick_id trick_id INT DEFAULT NULL, CHANGE user_id user_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE picture CHANGE trick_id trick_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE user ADD reset_token VARCHAR(255) DEFAULT NULL, CHANGE picture picture VARCHAR(255) DEFAULT NULL');
-        $this->addSql('ALTER TABLE video CHANGE trick_id trick_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE profile CHANGE user_id user_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE user CHANGE reset_token reset_token VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -34,8 +33,7 @@ final class Version20190910090646 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE comment CHANGE user_id user_id INT DEFAULT NULL, CHANGE trick_id trick_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE picture CHANGE trick_id trick_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE user DROP reset_token, CHANGE picture picture VARCHAR(255) DEFAULT \'NULL\' COLLATE utf8mb4_unicode_ci');
-        $this->addSql('ALTER TABLE video CHANGE trick_id trick_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE profile CHANGE user_id user_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE user CHANGE reset_token reset_token VARCHAR(255) DEFAULT \'NULL\' COLLATE utf8mb4_unicode_ci');
     }
 }
