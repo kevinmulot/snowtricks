@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\Profile;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -36,15 +37,32 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $picture;
-
-    // ...
-    /**
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
      */
     private $comment;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Profile", mappedBy="user", cascade="persist")
+     */
+    private $profile;
+
+    /**
+     * @return mixed
+     */
+    public function getProfile(): \App\Entity\Profile
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param mixed $profile
+     * @return User
+     */
+    public function setProfile($profile)
+    {
+        $this->profile = $profile;
+        return $this;
+    }
 
     /**
      * @var string le token qui servira lors de l'oubli de mot de passe
@@ -52,10 +70,8 @@ class User implements UserInterface
      */
     protected $resetToken;
 
-    /**
-     * Users constructor.
-     */
-    public function __construct() {
+    public function __construct()
+    {
         $this->comment = new ArrayCollection();
     }
 
@@ -125,25 +141,6 @@ class User implements UserInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getPicture(): ?string
-    {
-        return $this->picture;
-    }
-
-    /**
-     * @param string|null $picture
-     * @return User
-     */
-    public function setPicture(?string $picture): self
-    {
-        $this->picture = $picture;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getResetToken(): string
@@ -158,6 +155,7 @@ class User implements UserInterface
     {
         $this->resetToken = $resetToken;
     }
+
     /**
      * Returns the roles granted to the user.
      *
