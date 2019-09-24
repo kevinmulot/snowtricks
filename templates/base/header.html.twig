@@ -13,6 +13,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bolder" href="{{ path('user') }}">{{ app.user.username }}</a>
+                </li>
             {% else %}
             <li class="nav-item">
                 <a class="nav-link" href="/register">Sign up</a>
