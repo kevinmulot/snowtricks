@@ -33,27 +33,33 @@ class Trick
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="trick")
+     * @ORM\Column(type="datetime")
      */
-    private $comment;
+    private $datePost;
+
 
     /**
-     * @ORM\OneToMany(targetEntity="Picture", mappedBy="trick")
+     * @ORM\Column(type="datetime")
+     */
+    private $dateUpdate;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick")
+     */
+    private $comment;
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", orphanRemoval=true)
      */
     private $picture;
 
     /**
-     * @ORM\OneToMany(targetEntity="Video", mappedBy="trick")
-     */
-    private $video;
-
-    /**
      * Tricks constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
+        $this->dateUpdate = new \DateTime('now');
         $this->comment = new ArrayCollection();
         $this->picture = new ArrayCollection();
-        $this->video = new ArrayCollection();
     }
 
     /**
@@ -119,5 +125,37 @@ class Trick
         $this->category = $category;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDatePost()
+    {
+        return $this->datePost;
+    }
+
+    /**
+     * @param mixed $datePost
+     */
+    public function setDatePost($datePost): void
+    {
+        $this->datePost = $datePost;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateUpdate()
+    {
+        return $this->dateUpdate;
+    }
+
+    /**
+     * @param mixed $dateUpdate
+     */
+    public function setDateUpdate($dateUpdate): void
+    {
+        $this->dateUpdate = $dateUpdate;
     }
 }
