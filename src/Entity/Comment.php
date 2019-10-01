@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +39,37 @@ class Comment
      * @ORM\JoinColumn(name="trick_id", referencedColumnName="id")
      */
     private $trick;
+    /**
+     * @return Collection
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user): void
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @param mixed $trick
+     */
+    public function setTrick($trick): void
+    {
+        $this->trick = $trick;
+    }
+
+
+
+    public function __construct()
+    {
+        $this->addDate = new \DateTime('now');
+        $this->user = new ArrayCollection();
+    }
 
     /**
      * @return int|null
