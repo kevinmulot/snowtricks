@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -63,12 +64,12 @@ class Profile implements \serializable
      *
      * @Vich\UploadableField(mapping="users_image", fileNameProperty="imageName")
      *
-     * @var File|null
+     * @var File
      */
     private $imageFile;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @var string
      */
@@ -93,17 +94,19 @@ class Profile implements \serializable
      * must be able to accept an instance of 'File' as the bundle will inject one here
      * during Doctrine hydration.
      *
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $imageFile
+     * @param null|File $imageFile
+     * @return Profile
      */
-    public function setImageFile(?File $imageFile = null): void
+    public function setImageFile(?File $imageFile): Profile
     {
         $this->imageFile = $imageFile;
 
-        if (null !== $imageFile) {
+        if ($this->imageFile instanceof UploadedFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
             $this->updatedAt = new \DateTimeImmutable();
         }
+        return $this;
     }
 
     public function getImageFile(): ?File
