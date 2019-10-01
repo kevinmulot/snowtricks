@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,16 +29,47 @@ class Comment
     private $addDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="comment")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comment")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Trick", inversedBy="comment")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="comment")
      * @ORM\JoinColumn(name="trick_id", referencedColumnName="id")
      */
     private $trick;
+    /**
+     * @return Collection
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user): void
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @param mixed $trick
+     */
+    public function setTrick($trick): void
+    {
+        $this->trick = $trick;
+    }
+
+
+
+    public function __construct()
+    {
+        $this->addDate = new \DateTime('now');
+        $this->user = new ArrayCollection();
+    }
 
     /**
      * @return int|null

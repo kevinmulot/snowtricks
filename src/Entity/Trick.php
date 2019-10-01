@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,27 +34,56 @@ class Trick
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="trick")
+     * @ORM\Column(type="datetime")
+     */
+    private $datePost;
+
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateUpdate;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick")
      */
     private $comment;
 
     /**
-     * @ORM\OneToMany(targetEntity="Picture", mappedBy="trick")
+     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", orphanRemoval=true)
      */
     private $picture;
 
     /**
-     * @ORM\OneToMany(targetEntity="Video", mappedBy="trick")
+     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="trick")
      */
-    private $video;
+    private $Video;
 
     /**
      * Tricks constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
+        $this->dateUpdate = new \DateTime('now');
         $this->comment = new ArrayCollection();
         $this->picture = new ArrayCollection();
-        $this->video = new ArrayCollection();
+        $this->Video = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param mixed $comment
+     */
+    public function setComment($comment): void
+    {
+        $this->comment = $comment;
     }
 
     /**
@@ -118,6 +148,68 @@ class Trick
     {
         $this->category = $category;
 
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDatePost()
+    {
+        return $this->datePost;
+    }
+
+    /**
+     * @param mixed $datePost
+     */
+    public function setDatePost($datePost): void
+    {
+        $this->datePost = $datePost;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateUpdate()
+    {
+        return $this->dateUpdate;
+    }
+
+    /**
+     * @param mixed $dateUpdate
+     */
+    public function setDateUpdate($dateUpdate): void
+    {
+        $this->dateUpdate = $dateUpdate;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideo(): Collection
+    {
+        return $this->Video;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->Video->contains($video)) {
+            $this->Video[] = $video;
+            $video->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->Video->contains($video)) {
+            $this->Video->removeElement($video);
+            // set the owning side to null (unless already changed)
+            if ($video->getTrick() === $this) {
+                $video->setTrick(null);
+            }
+        }
         return $this;
     }
 }

@@ -19,37 +19,55 @@ class Video
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $url;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Trick", inversedBy="video")
-     * @ORM\JoinColumn(name="trick_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="Video")
      */
-    private $user;
+    private $trick;
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string|null
-     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
     public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * @param string $url
-     * @return Video
-     */
     public function setUrl(string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getTrick(): ?Trick
+    {
+        return $this->trick;
+    }
+
+    public function setTrick(?Trick $trick): self
+    {
+        $this->trick = $trick;
 
         return $this;
     }

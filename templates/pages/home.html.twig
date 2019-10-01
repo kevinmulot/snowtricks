@@ -1,5 +1,30 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Hello World</h1>
+    <div class="jumbotron jumbotron-fluid text-center">
+        <div class="card card-image" style="">
+            <h1 class="display-4">SnowTricks</h1>
+            <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+        </div>
+    </div>
+    <div class="container-fluid">
+
+        <div class="row">
+        {% for trick in trick %}
+        <div class="card col-md-2 col-sm-12 mt-4 mb-4 ml-2">
+            {% if picture.imagename is defined %}
+                <img class="card-img-top" src="{{ vich_uploader_asset(picture, 'imageFile')|imagine_filter('my_thumb')}}" alt="Card image cap">
+            {% else %}
+                <img class="card-img-top" src="{{ asset('/images/tricks/default.jpg') | imagine_filter('my_thumb') }}" alt="Card image cap">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ trick.name }}</h5>
+                <p class="card-text">{{ trick.content }}</p>
+                <a href="{{ path('trick_view', {id: trick.id}) }}" class="btn btn-primary">Details</a>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+
 {% endblock %}

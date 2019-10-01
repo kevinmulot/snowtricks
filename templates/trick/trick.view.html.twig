@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ trick.name }}{% endblock %}
+
+{% block body %}
+    {% if picture.imagename is defined %}
+        <div class="card card-image"
+             style="background-image: url({{ vich_uploader_asset(picture, 'imageFile')|imagine_filter('my_main') }})">
+            <div class=" text-center py-5 px-4 my-5">
+                <div>
+                    <h2 class="card-title text-white h1-responsive pt-3 mb-5 font-bold">
+                        <strong>{{ trick.name }}</strong></h2>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card card-image" style="background-image: url({{ asset('/images/tricks/default.jpg') }})">
+            <div class=" text-center py-5 px-4 my-5">
+                <h2 class="card-title text-white h1-responsive pt-3 mb-5 font-bold"><strong>{{ trick.name }}</strong>
+                </h2>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="container-fluid">
+        <p>{{ trick.content }}</p>
+
+        {% for comment in comments %}
+            {% if comment.user.profile.imagename is not null %}
+                <img class="img-fluid img-thumbnail"
+                     src="{{ asset('/images/users/' ~ comment.user.profile.imagename) | imagine_filter('my_thumb') }}"
+                     alt="profile picture">
+            {% else %}
+                <img class="img-fluid img-thumbnail"
+                     src="{{ asset('/images/users/default.jpg') | imagine_filter('my_thumb') }}" alt="profile picture">
+            {% endif %}
+            <p>{{ comment.adddate|date('d/m/Y') }}<br><b>{{ comment.user.username }} : </b>{{ comment.content }}</p>
+
+        {% endfor %}
+        {% if app.user %}
+        {{ form_start(commentForm) }}
+        {{ form_row(commentForm.content) }}
+        {{ form_row(commentForm.submit) }}
+        {{ form_end(commentForm) }}
+        {% else %}
+        <h3>Please Sign in to comment</h3>
+        {% endif %}
+    </div>
+{% endblock %}

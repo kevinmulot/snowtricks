@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\Profile;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -36,15 +38,16 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $picture;
-
-    // ...
-    /**
-     * @ORM\OneToMany(targetEntity="Comment", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
+     * @param Collection
      */
     private $comment;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Profile", mappedBy="user", cascade="persist")
+     * @ORM\JoinColumn(name="profile_id", referencedColumnName="id")
+     */
+    private $profile;
 
     /**
      * @var string le token qui servira lors de l'oubli de mot de passe
@@ -52,12 +55,27 @@ class User implements UserInterface
      */
     protected $resetToken;
 
-    /**
-     * Users constructor.
-     */
-    public function __construct() {
+    public function __construct()
+    {
         $this->comment = new ArrayCollection();
+        $this->profile = new ArrayCollection();
     }
+    /**
+     * @return Collection
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param mixed $profile
+     */
+    public function setProfile($profile): void
+    {
+        $this->profile = $profile;
+    }
+
 
     /**
      * @return int|null
@@ -125,25 +143,6 @@ class User implements UserInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getPicture(): ?string
-    {
-        return $this->picture;
-    }
-
-    /**
-     * @param string|null $picture
-     * @return User
-     */
-    public function setPicture(?string $picture): self
-    {
-        $this->picture = $picture;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getResetToken(): string
@@ -158,6 +157,7 @@ class User implements UserInterface
     {
         $this->resetToken = $resetToken;
     }
+
     /**
      * Returns the roles granted to the user.
      *

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Hello ! </h1>
+        {% if profile.imagename is not null %}
+        <img class="img-fluid img-thumbnail" src="{{ vich_uploader_asset(profile, 'imageFile')|imagine_filter('my_thumb')}}" alt="profile picture">
+        {% else %}
+        <img class="img-fluid img-thumbnail" src="{{ asset('/images/users/default.jpg') | imagine_filter('my_thumb') }}" alt="profile picture">
+        {% endif %}
+        <a class="btn btn-primary" href="{{ path('profile_edit', {id: profile.id}) }}">Edit Picture</a>
+        <ul>
+            <li>Username : {{ app.user.username }}</li>
+            <li>Email : {{ app.user.email }}</li>
+        </ul>
+        <a class="btn btn-primary" href="{{ path('user_edit', {id: app.user.id}) }}">Edit info</a>
+    </div>
+{% endblock %}
