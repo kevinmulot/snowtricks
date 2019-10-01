@@ -24,6 +24,7 @@ class UserController extends AbstractController
      * @var ProfileRepository
      */
     private $profileRepository;
+
     /**
      * @var ObjectManager
      */
@@ -41,17 +42,17 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/user", name="user")
+     * @Route("/user/{id}", name="user")
+     * @param User $user
      */
-    public function index(Request $request)
+    public function index(User $user)
     {
         // usually you'll want to make sure the user is authenticated first
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         // returns your User object, or null if the user is not authenticated
         // use inline documentation to tell your editor your exact User class
-
-        $profile = $this->profileRepository->findOneBy(['user' => $this->getUser()->getId()]);
+        $profile = $user->getProfile();
         return $this->render('user/index.html.twig', array('profile' => $profile) );
     }
 
@@ -68,7 +69,8 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-            return $this->redirectToRoute('user');
+
+            return $this->index($profile->getUser());
         }
         return $this->render('user/profile.html.twig', [
             'profileForm' => $form->createView()]);
