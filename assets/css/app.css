@@ -8,3 +8,6 @@ footer {
     bottom: 0;
     min-height: 8rem;
 }
+a img {
+    width: 20%;
+}
