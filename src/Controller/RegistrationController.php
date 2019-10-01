@@ -34,7 +34,7 @@ class RegistrationController extends AbstractController
                 )
             );
             $profile = new Profile();
-            $profile->setImageName('none.jpg');
+            $profile->setImageName(null);
             $profile->setUser($user);
             $user->setProfile($profile);
             $entityManager = $this->getDoctrine()->getManager();
