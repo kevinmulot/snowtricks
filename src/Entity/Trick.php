@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,10 +48,16 @@ class Trick
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick")
      */
     private $comment;
+
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="trick", orphanRemoval=true)
      */
     private $picture;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="trick")
+     */
+    private $Video;
 
     /**
      * Tricks constructor.
@@ -60,6 +67,23 @@ class Trick
         $this->dateUpdate = new \DateTime('now');
         $this->comment = new ArrayCollection();
         $this->picture = new ArrayCollection();
+        $this->Video = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param mixed $comment
+     */
+    public function setComment($comment): void
+    {
+        $this->comment = $comment;
     }
 
     /**
@@ -157,5 +181,35 @@ class Trick
     public function setDateUpdate($dateUpdate): void
     {
         $this->dateUpdate = $dateUpdate;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideo(): Collection
+    {
+        return $this->Video;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->Video->contains($video)) {
+            $this->Video[] = $video;
+            $video->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->Video->contains($video)) {
+            $this->Video->removeElement($video);
+            // set the owning side to null (unless already changed)
+            if ($video->getTrick() === $this) {
+                $video->setTrick(null);
+            }
+        }
+        return $this;
     }
 }
