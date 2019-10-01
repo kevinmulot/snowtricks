@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -38,31 +39,15 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
+     * @param Collection
      */
     private $comment;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Profile", mappedBy="user", cascade="persist")
+     * @ORM\JoinColumn(name="profile_id", referencedColumnName="id")
      */
     private $profile;
-
-    /**
-     * @return mixed
-     */
-    public function getProfile(): \App\Entity\Profile
-    {
-        return $this->profile;
-    }
-
-    /**
-     * @param mixed $profile
-     * @return User
-     */
-    public function setProfile($profile)
-    {
-        $this->profile = $profile;
-        return $this;
-    }
 
     /**
      * @var string le token qui servira lors de l'oubli de mot de passe
@@ -73,7 +58,24 @@ class User implements UserInterface
     public function __construct()
     {
         $this->comment = new ArrayCollection();
+        $this->profile = new ArrayCollection();
     }
+    /**
+     * @return Collection
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param mixed $profile
+     */
+    public function setProfile($profile): void
+    {
+        $this->profile = $profile;
+    }
+
 
     /**
      * @return int|null
