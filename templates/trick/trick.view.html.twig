@@ -3,31 +3,62 @@
 {% block title %}{{ trick.name }}{% endblock %}
 
 {% block body %}
-    {% if picture.imagename is defined %}
-        <div class="card card-image"
-             style="background-image: url({{ vich_uploader_asset(picture, 'imageFile')|imagine_filter('my_main') }})">
-            <div class=" text-center py-5 px-4 my-5">
-                <div>
-                    <h2 class="card-title text-white h1-responsive pt-3 mb-5 font-bold">
-                        <strong>{{ trick.name }}</strong></h2>
-                </div>
-            </div>
+
+    <div class="card card-image"
+         style="background-image: url({{ asset('/images/tricks/' ~ trick.mainPicture) | imagine_filter('my_main') }})">
+        <div class="d-flex ml-auto col-1">
+            {% if is_granted('ROLE_ADMIN') %}
+                {% if trick.mainPicture == 'default.jpg' %}
+                    <a class="btn btnlink btn-primary btn-sm d-flex"
+                       href="{{ path('picture_new', {id: trick.id, statut: 'main'}) }}"><i
+                                class="far fa-edit"></i></a>
+                {% else %}
+                    {% for picture in pictures %}
+                        {% if picture.statut == 'main' %}
+                            <a class="btn btnlink btn-primary btn-sm d-flex"
+                               href="{{ path('picture_edit', {id: picture.id, statut: picture.statut}) }}"><i
+                                        class="far fa-edit"></i></a>
+
+                            <a class="btn btnlink btn-danger btn-sm d-flex"
+                               href="{{ path('picture_delete', {id: picture.id, statut: picture.statut}) }}">
+                                <i
+                                        class="fas fa-trash"></i></a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
         </div>
-    {% else %}
-        <div class="card card-image" style="background-image: url({{ asset('/images/tricks/default.jpg') }})">
-            <div class=" text-center py-5 px-4 my-5">
-                <h2 class="card-title text-white h1-responsive pt-3 mb-5 font-bold"><strong>{{ trick.name }}</strong>
-                </h2>
-            </div>
+        <div class=" text-center py-5 px-4 my-5">
+            <h2 class="card-title text-white h1-responsive pt-3 mb-5 font-bold"><strong>{{ trick.name }}</strong>
+            </h2>
         </div>
-    {% endif %}
+    </div>
 
     <div class="container-fluid">
+        <div class="row col-12">
+
+            {% for picture in pictures %}
+                {% if picture.statut == 'normal' %}
+                    <div class="card border-0 col-md-2 col-sm-12 mt-4 mb-4 ml-2">
+                        <img class="card-img-top"
+                             src="{{ asset('/images/tricks/' ~ picture.name) | imagine_filter('my_thumb') }}"
+                             alt="Trick picture">
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% for video in videos %}
+                <iframe class="col-md-2 col-sm-12 mt-4 mb-4 ml-2 h-100 js-media border-0" src="{{ video.url }}"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+            {% endfor %}
+        </div>
+
         <p>{{ trick.content }}</p>
 
         {% for comment in comments %}
             {% if comment.user.profile.imagename is not null %}
-                <img class="img-fluid img-thumbnail"
+                <img class="img-fluid rounded-circle"
                      src="{{ asset('/images/users/' ~ comment.user.profile.imagename) | imagine_filter('my_thumb') }}"
                      alt="profile picture">
             {% else %}
@@ -35,15 +66,16 @@
                      src="{{ asset('/images/users/default.jpg') | imagine_filter('my_thumb') }}" alt="profile picture">
             {% endif %}
             <p>{{ comment.adddate|date('d/m/Y') }}<br><b>{{ comment.user.username }} : </b>{{ comment.content }}</p>
-
         {% endfor %}
+
         {% if app.user %}
-        {{ form_start(commentForm) }}
-        {{ form_row(commentForm.content) }}
-        {{ form_row(commentForm.submit) }}
-        {{ form_end(commentForm) }}
+            {{ form_start(commentForm) }}
+            {{ form_row(commentForm.content) }}
+            {{ form_row(commentForm.submit) }}
+            {{ form_end(commentForm) }}
         {% else %}
-        <h3>Please Sign in to comment</h3>
+            <h3>Please Sign in to comment</h3>
         {% endif %}
     </div>
+
 {% endblock %}
