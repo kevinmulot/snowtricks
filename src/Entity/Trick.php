@@ -38,14 +38,13 @@ class Trick
      */
     private $datePost;
 
-
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $dateUpdate;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", orphanRemoval=true)
      */
     private $comment;
 
@@ -55,7 +54,12 @@ class Trick
     private $picture;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="trick")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $mainPicture;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="trick", orphanRemoval=true)
      */
     private $Video;
 
@@ -64,10 +68,27 @@ class Trick
      */
     public function __construct()
     {
-        $this->dateUpdate = new \DateTime('now');
+        $this->datePost = new \DateTime('now');
         $this->comment = new ArrayCollection();
         $this->picture = new ArrayCollection();
         $this->Video = new ArrayCollection();
+        $this->mainPicture = "default.jpg";
+    }
+
+    /**
+     * @param mixed $picture
+     */
+    public function setPicture($picture): void
+    {
+        $this->picture = $picture;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPicture()
+    {
+        return $this->picture;
     }
 
     /**
@@ -103,10 +124,10 @@ class Trick
     }
 
     /**
-     * @param string $name
+     * @param $name
      * @return Trick
      */
-    public function setName(string $name): self
+    public function setName( $name): self
     {
         $this->name = $name;
 
@@ -184,32 +205,34 @@ class Trick
     }
 
     /**
-     * @return Collection|Video[]
+     * @return mixed
      */
-    public function getVideo(): Collection
+    public function getMainPicture()
+    {
+        return $this->mainPicture;
+    }
+
+    /**
+     * @param mixed $mainPicture
+     */
+    public function setMainPicture($mainPicture): void
+    {
+        $this->mainPicture = $mainPicture;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVideo()
     {
         return $this->Video;
     }
 
-    public function addVideo(Video $video): self
+    /**
+     * @param mixed $Video
+     */
+    public function setVideo($Video): void
     {
-        if (!$this->Video->contains($video)) {
-            $this->Video[] = $video;
-            $video->setTrick($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVideo(Video $video): self
-    {
-        if ($this->Video->contains($video)) {
-            $this->Video->removeElement($video);
-            // set the owning side to null (unless already changed)
-            if ($video->getTrick() === $this) {
-                $video->setTrick(null);
-            }
-        }
-        return $this;
+        $this->Video = $Video;
     }
 }
