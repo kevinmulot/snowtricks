@@ -35,7 +35,7 @@ class UserController extends AbstractController
      * @param ProfileRepository $profileRepository
      * @param ObjectManager $em
      */
-    public function __construct( ProfileRepository $profileRepository, ObjectManager $em)
+    public function __construct(ProfileRepository $profileRepository, ObjectManager $em)
     {
         $this->profileRepository = $profileRepository;
         $this->em = $em;
@@ -53,7 +53,7 @@ class UserController extends AbstractController
         // returns your User object, or null if the user is not authenticated
         // use inline documentation to tell your editor your exact User class
         $profile = $user->getProfile();
-        return $this->render('user/index.html.twig', array('profile' => $profile) );
+        return $this->render('user/index.html.twig', array('profile' => $profile));
     }
 
     /**
@@ -77,7 +77,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/user/{id}", name="user_edit")
+     * @Route("/user/edit/{id}", name="user_edit")
      * @param User $user
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -89,7 +89,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-            return $this->redirectToRoute('user');
+            return $this->redirectToRoute('user', array('id' => $user->getId()));
         }
         return $this->render('user/edit.html.twig', [
             'edituserForm' => $form->createView()]);
