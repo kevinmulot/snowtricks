@@ -31,8 +31,7 @@ class ProfileFormType extends AbstractType
                 ],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Submit'
-            ]);;
+                'label' => 'Save']);;
     }
 
     public function configureOptions(OptionsResolver $resolver)

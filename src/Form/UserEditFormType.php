@@ -22,8 +22,8 @@ class UserEditFormType extends AbstractType
                 [
                     'required' => false])
             ->add('submit', SubmitType::class, [
-                'label' => 'Submit'
-            ]);;
+                'label' => 'Save'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
