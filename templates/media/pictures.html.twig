@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pictures{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {% if statut == 'normal' %}
+            {% for picture in pictures %}
+                {% if picture.statut == 'normal' %}
+                    <img class="img-fluid img-thumbnail"
+                         src="{{ asset('/images/tricks/' ~ picture.name) | imagine_filter('my_thumb') }}"
+                         alt="trick picture">
+                {% endif %}
+
+            {% endfor %}
+        {% else %}
+            <h2 class="text-center">Add main picture</h2>
+        {% endif %}
+        {{ form_start(pictureForm) }}
+        {{ form_row(pictureForm.picture) }}
+        {{ form_row(pictureForm.submit) }}
+        {{ form_end(pictureForm) }}
+    </div>
+{% endblock %}
