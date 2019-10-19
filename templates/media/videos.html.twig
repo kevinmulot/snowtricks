@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pictures{% endblock %}
+{% block body %}
+    <h2 class="text-center">Add video</h2>
+
+    {{ form_start(videoForm) }}
+    {{ form_row(videoForm.name) }}
+    {{ form_row(videoForm.url) }}
+    {{ form_row(videoForm.submit) }}
+    {{ form_end(videoForm) }}
+
+{% endblock %}
