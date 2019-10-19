@@ -63,8 +63,6 @@ class Comment
         $this->trick = $trick;
     }
 
-
-
     public function __construct()
     {
         $this->addDate = new \DateTime('now');
