@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\ProfileRepository;
 use App\Repository\TrickRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +28,7 @@ class HomeController extends AbstractController
      * @param TrickRepository $Repository
      * @param ObjectManager $em
      */
-    public function __construct( TrickRepository $Repository, ObjectManager $em)
+    public function __construct(TrickRepository $Repository, ObjectManager $em)
     {
         $this->trickRepository = $Repository;
         $this->em = $em;
@@ -41,7 +40,8 @@ class HomeController extends AbstractController
      */
     public function index()
     {
-        $trick = $this->trickRepository->findBy([], ['datePost'=> 'ASC']);
-        return $this->render('/pages/home.html.twig', ['trick'=> $trick]);
+        $trick = $this->trickRepository->findBy([], ['datePost' => 'ASC']);
+
+        return $this->render('/pages/home.html.twig', ['trick' => $trick]);
     }
 }

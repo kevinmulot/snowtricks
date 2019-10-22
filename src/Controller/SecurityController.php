@@ -36,6 +36,7 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/logout", name="app_logout")
+     * @throws \Exception
      */
     public function logout()
     {
@@ -55,21 +56,17 @@ class SecurityController extends AbstractController
         $userInfo = ['username' => null];
         $form = $this->createForm(ForgottenPasswordFormType::class, $userInfo);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() and $form->isValid()) {
-
             $userInfo = $form->getData();
             $username = $userInfo['username'];
             $entityManager = $this->getDoctrine()->getManager();
             $user = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
             /* @var $user User */
-
             if ($user === null) {
                 $this->addFlash('danger', 'Unknown Username');
                 return $this->redirectToRoute('home');
             }
             $token = $tokenGenerator->generateToken();
-
             try {
                 $user->setResetToken($token);
                 $entityManager->flush();
@@ -77,9 +74,7 @@ class SecurityController extends AbstractController
                 $this->addFlash('warning', $e->getMessage());
                 return $this->redirectToRoute('home');
             }
-
             $url = $this->generateUrl('app_reset_password', array('token' => $token), UrlGeneratorInterface::ABSOLUTE_URL);
-
             $message = (new \Swift_Message('Forgot Password'))
                 ->setFrom('noreply@snowtricks.com')
                 ->setTo($user->getEmail())
@@ -87,9 +82,7 @@ class SecurityController extends AbstractController
                     "Reset password link: " . $url,
                     'text/html'
                 );
-
             $mailer->send($message);
-
             $this->addFlash('notice', 'Mail sent');
 
             return $this->redirectToRoute('home');
@@ -106,7 +99,6 @@ class SecurityController extends AbstractController
     {
         $form = $this->createForm(ResetPasswordFormType::class);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() and $form->isValid()) {
             $plainPassword = $form->get('plainPassword')->getData();
             $entityManager = $this->getDoctrine()->getManager();
@@ -122,10 +114,8 @@ class SecurityController extends AbstractController
             $this->addFlash('notice', 'Mot de passe mis à jour');
 
             return $this->redirectToRoute('home');
-        } else {
-
-            return $this->render('security/reset_password.html.twig', ['token' => $token,
-                'resetPasswordForm' => $form->createView()]);
         }
+        return $this->render('security/reset_password.html.twig', ['token' => $token,
+            'resetPasswordForm' => $form->createView()]);
     }
 }

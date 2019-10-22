@@ -10,20 +10,27 @@
     <div class="container-fluid">
 
         <div class="row">
-        {% for trick in trick %}
-        <div class="card col-md-2 col-sm-12 mt-4 mb-4 ml-2">
-            {% if picture.imagename is defined %}
-                <img class="card-img-top" src="{{ vich_uploader_asset(picture, 'imageFile')|imagine_filter('my_thumb')}}" alt="Card image cap">
-            {% else %}
-                <img class="card-img-top" src="{{ asset('/images/tricks/default.jpg') | imagine_filter('my_thumb') }}" alt="Card image cap">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ trick.name }}</h5>
-                <p class="card-text">{{ trick.content }}</p>
-                <a href="{{ path('trick_view', {id: trick.id}) }}" class="btn btn-primary">Details</a>
-            </div>
-        </div>
-        {% endfor %}
+            {% for trick in trick %}
+                <div class="card col-md-2 col-sm-12 mt-4 mb-4 ml-2">
+                    <img class="card-img-top mt-2"
+                         src="{{ asset('/images/tricks/' ~ trick.mainPicture) | imagine_filter('my_thumb') }}"
+                         alt="Card image cap">
+
+                    <div class="card-body">
+                        <a class="card-title font-weight-bolder" href="{{ path('trick_view', {id: trick.id}) }}"
+                           class="btn btn-primary">{{ trick.name }}</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="btn btnlink btn-primary btn-sm float-right"
+                               href="{{ path('trick_edit', {id: trick.id}) }}"><i
+                                        class="far fa-edit"></i> </a>
+                            <a class="btn btnlink btn-danger btn-sm float-right"
+                               href="{{ path('trick_delete', {id: trick.id}) }}">
+                                <i
+                                        class="fas fa-trash"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 

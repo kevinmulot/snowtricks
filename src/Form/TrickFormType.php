@@ -23,9 +23,8 @@ class TrickFormType extends AbstractType
                     'bad' => 'bad'
                 ]])
             ->add('submit', SubmitType::class, [
-                'label' => 'Submit'
-            ])
-        ;
+                'label' => 'Save'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -55,6 +55,11 @@ class User implements UserInterface
      */
     protected $resetToken;
 
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
     public function __construct()
     {
         $this->comment = new ArrayCollection();
@@ -158,23 +163,13 @@ class User implements UserInterface
         $this->resetToken = $resetToken;
     }
 
-    /**
-     * Returns the roles granted to the user.
-     *
-     *     public function getRoles()
-     *     {
-     *         return ['ROLE_USER'];
-     *     }
-     *
-     * Alternatively, the roles might be stored on a ``roles`` property,
-     * and populated in any number of different ways when the user object
-     * is created.
-     *
-     * @return (Role|string)[] The user roles
-     */
-    public function getRoles()
+    public function getRoles(): array
     {
-        return ['ROLE_USER'];
+    $roles = $this->roles;
+    // guarantee every user at least has ROLE_USER
+    $roles[] = 'ROLE_USER';
+
+    return array_unique($roles);
     }
 
     /**
