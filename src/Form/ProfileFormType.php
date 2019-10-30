@@ -10,14 +10,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
+/**
+ * Class ProfileFormType
+ * @package App\Form
+ */
 class ProfileFormType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('imageFile', VichImageType::class, [
                 'label' => 'Profile Picture',
                 'required' => false,
+                'download_link' => false,
                 'constraints' => [
                     new File([
                         'maxSize' => '1024k',
@@ -34,6 +43,9 @@ class ProfileFormType extends AbstractType
                 'label' => 'Save']);;
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
