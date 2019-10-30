@@ -4,13 +4,18 @@
 
 {% block body %}
     <div class="container">
-        <h1>Create</h1>
-        <ul>{{ form_start(trickForm) }}
-            {{ form_row(trickForm.name) }}
-            {{ form_row(trickForm.content) }}
-            {{ form_row(trickForm.category) }}
-            {{ form_row(trickForm.submit) }}
-            {{ form_end(trickForm) }}
-        </ul>
+        <div class="row justify-content-center">
+            <h1 class="h1 col-12 mt-3 mb-3 font-weight-normal text-center d-md-block d-none">Add a trick</h1>
+            <div class="border text-center mb-3 mt-4 col-8">
+                <h2 class="h1 mb-3 font-weight-normal text-center d-none d-sm-block d-block d-md-none">Add a
+                    Trick</h2>
+                {{ form_start(trickForm) }}
+                {{ form_row(trickForm.name) }}
+                {{ form_row(trickForm.content, {'attr': {'rows': '10'}}) }}
+                {{ form_row(trickForm.category) }}
+                {{ form_row(trickForm.submit) }}
+                {{ form_end(trickForm) }}
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -3,15 +3,18 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-
     <div class="container">
-        <h1>Edit profile</h1>
-
-        <ul>{{ form_start(edituserForm) }}
-            {{ form_row(edituserForm.username) }}
-            {{ form_row(edituserForm.email) }}
-            {{ form_row(edituserForm.submit) }}
-            {{ form_end(edituserForm) }}
-        </ul>
+        <div class="row justify-content-center">
+            <h1 class="h1 col-12 mt-3 mb-3 font-weight-normal text-center d-md-block d-none">Edit your infos</h1>
+            <div class="border text-center mt-4 col-8">
+                <h2 class="h1 mb-3 font-weight-normal text-center d-none d-sm-block d-block d-md-none">Edit your
+                    infos</h2>
+                {{ form_start(edituserForm) }}
+                {{ form_row(edituserForm.username) }}
+                {{ form_row(edituserForm.email) }}
+                {{ form_row(edituserForm.submit) }}
+                {{ form_end(edituserForm) }}
+            </div>
+        </div>
     </div>
 {% endblock %}
