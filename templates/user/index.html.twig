@@ -3,19 +3,41 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-
     <div class="container">
-        <h1>Hello ! </h1>
-        {% if profile.imagename is not null %}
-        <img class="img-fluid img-thumbnail" src="{{ vich_uploader_asset(profile, 'imageFile')|imagine_filter('my_thumb')}}" alt="profile picture">
-        {% else %}
-        <img class="img-fluid img-thumbnail" src="{{ asset('/images/users/default.jpg') | imagine_filter('my_thumb') }}" alt="profile picture">
-        {% endif %}
-        <a class="btn btn-primary" href="{{ path('profile_edit', {id: profile.id}) }}">Edit Picture</a>
-        <ul>
-            <li>Username : {{ app.user.username }}</li>
-            <li>Email : {{ app.user.email }}</li>
-        </ul>
-        <a class="btn btn-primary" href="{{ path('user_edit', {id: app.user.id}) }}">Edit info</a>
+        <div class="row justify-content-center">
+            <h1 class="h1 col-12 mt-3 mb-3 font-weight-normal text-center d-md-block d-none">Edit your profile</h1>
+            <div class="border text-center mt-4 mb-4 col-8">
+                <h2 class="h1 mb-3 font-weight-normal text-center d-none d-sm-block d-block d-md-none">Edit your
+                    profile</h2>
+                {% if profile.imagename is not null %}
+                    <img class="img-fluid img-thumbnail mt-4"
+                         src="{{ vich_uploader_asset(profile, 'imageFile')|imagine_filter('my_thumb') }}"
+                         alt="profile picture">
+                {% else %}
+                    <img class="img-fluid img-thumbnail mt-4"
+                         src="{{ asset('/images/users/default.jpg') | imagine_filter('my_thumb') }}"
+                         alt="profile picture">
+                {% endif %}
+                <br>
+                <a class="btn btn-primary btn-sm mt-2 mb-2" href="{{ path('profile_edit', {id: profile.id}) }}">Edit
+                    Picture</a>
+
+                <p><b>Username : </b>{{ app.user.username }}<br>
+                    <b>Email : </b>{{ app.user.email }}</p>
+
+                <a class="btn btn-primary btn-sm mb-4" href="{{ path('user_edit', {username: app.user.username}) }}">Edit
+                    infos</a>
+                <br>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <p class="text-center text-danger">This account cannot be deleted</p>
+                {% else %}<a class="btn btnlink btn-sm btn-outline-danger mt-4 mb-2"
+                   href="javascript:void(0)"
+                   onclick="if(confirm('Are you sure ?')){window.location='{{ path('account_delete', {username: app.user.username}) }}';}">Delete
+                    my account
+                    <i
+                            class="fas fa-trash"></i></a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}
