@@ -1,31 +1,38 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="/">SnowTricks</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar shadow navbar-expand-lg navbar-dark bg-primary" id="navbartop">
+    <a class="navbar-brand" href="/"><img src="/images/assets/logo.png" class="logo"
+                                          alt="logo">SnowTricks</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{{ path('home') }}">Home <span class="sr-only">(current)</span></a>
             </li>
             {% if app.user %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('trick_create') }}">Add Trick</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('users') }}">Users</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('tricks') }}">Tricks</a>
+                    <a class="nav-link" href="{{ path('app_logout') }}">Sign out</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link font-weight-bolder" href="{{ path('user', { id: app.user.id })}}">{{ app.user.username }}</a>
+                    <a class="nav-link font-weight-bolder"
+                       href="{{ path('user', { username: app.user.username }) }}">{{ app.user.username|slice (0,15) }}</a>
                 </li>
             {% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="/register">Sign up</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/login">Sign in</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_register') }}">Sign up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_login') }}">Sign in</a>
+                </li>
             {% endif %}
         </ul>
     </div>
