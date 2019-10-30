@@ -38,7 +38,7 @@ $(function () {
 //******************* Load More Media **********************//
 $(function () {
     $(".holder").slice(0, 6).show();
-    $("#loadMoreMedia").on('click', function (e) {
+    $("#loadMoreMedia").on("click", function (e) {
         e.preventDefault();
         $(".holder:hidden").slice(0, 6).slideDown();
         if ($(".holder:hidden").length === 0) {
