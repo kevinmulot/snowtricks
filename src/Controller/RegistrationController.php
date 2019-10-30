@@ -13,6 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
+/**
+ * Class RegistrationController
+ * @package App\Controller
+ */
 class RegistrationController extends AbstractController
 {
     /**
@@ -38,9 +42,9 @@ class RegistrationController extends AbstractController
             $profile->setUser($user);
             $user->setProfile($profile);
             $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($profile);
             $entityManager->persist($user);
             $entityManager->flush();
-
             // do anything else you need here, like send an email
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
@@ -49,7 +53,6 @@ class RegistrationController extends AbstractController
                 'main' // firewall name in security.yaml
             );
         }
-
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
