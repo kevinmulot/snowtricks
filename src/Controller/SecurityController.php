@@ -15,6 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
+/**
+ * Class SecurityController
+ * @package App\Controller
+ */
 class SecurityController extends AbstractController
 {
     /**
@@ -101,17 +105,19 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() and $form->isValid()) {
             $plainPassword = $form->get('plainPassword')->getData();
+            $username = $form->get('username')->getData();
             $entityManager = $this->getDoctrine()->getManager();
             $user = $entityManager->getRepository(User::class)->findOneBy(['resetToken' => $token]);
             /* @var $user User */
-            if ($user === null) {
-                $this->addFlash('danger', 'Token Inconnu');
+            if ($user === null or $username != $user->getUsername()) {
+                $this->addFlash('danger', 'Unknown User');
+
                 return $this->redirectToRoute('home');
             }
             $user->setResetToken(null);
             $user->setPassword($passwordEncoder->encodePassword($user, $plainPassword));
             $entityManager->flush();
-            $this->addFlash('notice', 'Mot de passe mis à jour');
+            $this->addFlash('notice', 'Password updated !');
 
             return $this->redirectToRoute('home');
         }
