@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ trick.name }}{% endblock %}
+
+{% block body %}
+    <div class="img-fluid trickpic"
+         style="background-image: url({{ asset('/images/tricks/' ~ trick.mainPicture) }})">
+        <div class="d-flex ml-auto col-1">
+            {% if is_granted('ROLE_ADMIN') %}
+                {% if trick.mainPicture == 'default.jpg' %}
+                    <a class="btn btn-secondary shadow btn-sm btnfloat1"
+                       href="{{ path('picture_new', {slug: trick.slug, statut: 'main'}) }}"><i
+                                class="far fa-edit"></i></a>
+                {% else %}
+                    {% for picture in pictures %}
+                        {% if picture.statut == 'main' %}
+                            <a class="btn btn-secondary shadow btn-sm btnfloat1"
+                               href="{{ path('picture_edit', {id: picture.id, statut: picture.statut}) }}"><i
+                                        class="far fa-edit"></i></a>
+
+                            <a class="btn btn-danger shadow btn-sm btnfloat2"
+                               href="javascript:void(0)"
+                               onclick="if(confirm('Are you sure?')){window.location='{{ path('picture_delete', {id: picture.id, statut: picture.statut}) }}';}">
+                                <i
+                                        class="fas fa-trash"></i></a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class=" text-center py-5 px-4 my-5">
+            <h2 class="card-title text-white h1-responsive pt-3 mb-5 font-bold"><b>{{ trick.name }}</b>
+            </h2>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            {% for picture in pictures %}
+                {% if picture.statut == 'normal' %}
+                    <div class="card border-0 col-md-2 col-sm-12 mt-4 mb-4">
+                        <img class="card-img-top"
+                             src="{{ asset('/images/tricks/' ~ picture.name) | imagine_filter('my_thumb') }}"
+                             alt="Trick picture">
+                        <div class="card-body">
+                            <a class="btn btnlink btn-secondary btn-sm float-right"
+                               href="{{ path('picture_edit', {id: picture.id, statut: picture.statut}) }}"><i
+                                        class="far fa-edit"></i> </a>
+                            <a class="btn btnlink btn-danger btn-sm float-right"
+                               href="javascript:void(0)"
+                               onclick="if(confirm('Are you sure ?')){window.location='{{ path('picture_delete', {id: picture.id, statut: picture.statut}) }}';}">
+                                <i
+                                        class="fas fa-trash"></i></a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% for video in videos %}
+                <div class="card border-0 col-md-2 col-sm-12 mt-4 mb-4 ml-2">
+                    <iframe class="card-img-top h-100 js-media border-0"
+                            src="{{ video.url }}"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    <div class="card-body">
+                        <a class="btn btnlink btn-secondary btn-sm float-right"
+                           href="{{ path('video_edit', {id: video.id}) }}"><i
+                                    class="far fa-edit"></i> </a>
+                        <a class="btn btnlink btn-danger btn-sm float-right"
+                           href="javascript:void(0)"
+                           onclick="if(confirm('Are you sure ?')){window.location='{{ path('video_delete', {id: video.id, statut: 'normal'}) }}';}">
+                            <i
+                                    class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row col-12 mt-4 justify-content-around">
+        {% if trick.mainPicture == 'default.jpg' %}
+            <a class="btn btnlink btn-secondary shadow-sm btn-sm"
+               href="{{ path('picture_new', {slug: trick.slug , statut: 'main'}) }}">
+                <i
+                        class="fas fa-plus"></i>Add picture</a>
+        {% else %}
+            <a class="btn btnlink btn-secondary shadow-sm btn-sm"
+               href="{{ path('picture_new', {slug: trick.slug, statut: 'normal'}) }}">
+                <i
+                        class="fas fa-plus"></i>Add picture</a>
+        {% endif %}
+        <a class="btn btnlink btn-secondary shadow-sm btn-sm "
+           href="{{ path('video_new', {slug: trick.slug}) }}">
+            <i
+                    class="fas fa-plus"></i>Add video</a>
+    </div>
+    <hr>
+    <div class="container">
+        <h1 class="col-12 text-center">Edit this trick</h1>
+        {{ form_start(trickForm) }}
+        {{ form_row(trickForm.name) }}
+        {{ form_row(trickForm.content, {'attr': {'rows': '10'}}) }}
+        <div class="row">
+            <div class="col-4 mb-4"> {{ form_row(trickForm.category) }}</div>
+            <div class="col-8 mt-3">{{ form_row(trickForm.submit, { 'attr': {'class': ' btn btn-primary ml-4 mt-3 float-right'} }) }}
+                <a class="btn btn-outline-danger mr-4 float-right"
+                   href="javascript:void(0)"
+                   onclick="if(confirm('Are you sure ?')){window.location='{{ path('trick_delete', {slug: trick.slug}) }}';}">
+                    Delete</a></div>
+        </div>
+        {{ form_end(trickForm) }}
+    </div>
+{% endblock %}
