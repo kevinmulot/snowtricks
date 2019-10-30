@@ -1,13 +1,125 @@
-body {
+body, html {
+    margin: 0;
+    overflow-x: hidden;
     min-height: 100%;
+}
+
+section {
+    min-height: 90vh;
+    margin: 0;
 }
 
 footer {
     background-color: #444444;
     width: 100%;
     bottom: 0;
-    min-height: 8rem;
+    min-height: 10vh;
 }
+
+.holdertrick .card {
+    min-width: 100%;
+    min-height: 100%;
+}
+
+img.img-fluid.rounded-circle {
+    width: 50px;
+    height: 50px;
+}
+
+.snowtrick {
+    background-image: url(/images/assets/home.jpg);
+    background-size: cover;
+    text-align: center;
+    background-position: center;
+    height: auto;
+    min-height: 95vh;
+}
+
+.jumbarrow {
+    position: absolute;
+    bottom: 10vh;
+    right: 5vh;
+    color: #444444;
+
+}
+
+h1.slogan {
+    text-shadow: black 0.1em 0.1em 0.2em;
+    margin-top: 30vh;
+}
+
+.btnfloat1 {
+    position: absolute;
+    top: 2vh;
+    right: 4vh;
+}
+
+.btnfloat2 {
+    position: absolute;
+    top: 2vh;
+    right: 10vh;
+}
+
+.trickpic {
+    background-size: cover;
+    text-align: center;
+    background-position: center;
+    min-height: 50vh;
+}
+
+.container .jumbotron {
+    border-radius: 0 !important;
+}
+
 a img {
     width: 20%;
+}
+
+img.logo {
+    width: 12%;
+}
+
+.holder, .holdercomments, .holdertrick, .showHide, a.uptricks, .tricklist {
+    display: none;
+}
+
+.comment {
+    background-color: #f9f9f9;
+}
+
+/* Desktop*/
+@media screen and (max-width: 768px) {
+    #medias, #navbartop, .footer {
+        display: none;
+    }
+
+    .navbarbot {
+        overflow: hidden;
+        background-color: #444444;
+        position: fixed;
+        padding-top: 20vh;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .navbarbot a {
+        color: #f2f2f2;
+        text-align: center;
+        text-decoration: none;
+        font-size: 1.5rem;
+    }
+
+    .navbarbot a:hover {
+        background: #f1f1f1;
+        color: black;
+    }
+
+    section {
+        margin-bottom: 3rem;
+    }
+
+    .navbarbot a.active {
+        background-color: #4CAF50;
+        color: white;
+    }
 }
