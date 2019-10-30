@@ -25,11 +25,11 @@ $(document).ready(function () {
 //******************* Load More Tricks **********************//
 $(function () {
     $(".holdertrick").slice(0, 5).show();
-    $("#loadMoreTricks").on('click', function (e) {
+    $("#loadMoreTricks").on("click", function (e) {
         e.preventDefault();
         $(".holdertrick:hidden").slice(0, 5).slideDown();
         if ($(".holdertrick:hidden").length === 0) {
-            $("#loadMoreTricks").fadeOut('slow');
+            $("#loadMoreTricks").fadeOut("slow");
         }
     });
 });
@@ -42,7 +42,7 @@ $(function () {
         e.preventDefault();
         $(".holder:hidden").slice(0, 6).slideDown();
         if ($(".holder:hidden").length === 0) {
-            $("#loadMoreMedia").fadeOut('slow');
+            $("#loadMoreMedia").fadeOut("slow");
         }
     });
 });
@@ -50,12 +50,12 @@ $(function () {
 $(function () {
     $(function () {
         $(".holdercomments").slice(0, 10).show();
-        $("#loadMoreComments").on('click', function (e) {
+        $("#loadMoreComments").on("click", function (e) {
             e.preventDefault();
             $(".holdercomments:hidden").slice(0, 10).slideDown();
 
             if ($(".holdercomments:hidden").length === 0) {
-                $("#loadMoreComments").fadeOut('slow');
+                $("#loadMoreComments").fadeOut("slow");
             }
         });
     });
@@ -87,7 +87,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $("#showlist").click(function () {
         $(".tricklist").show();
-        $("#showlist").fadeOut('slow');
+        $("#showlist").fadeOut("slow");
     });
 });
 
@@ -97,8 +97,8 @@ $(function () {
      **/
     $("a[href*='#']:not([href='#'])").click(function () {
         if (
-            location.hostname == this.hostname
-            && this.pathname.replace(/^\//, "") == location.pathname.replace(/^\//, "")
+            location.hostname === this.hostname
+            && this.pathname.replace(/^\//, "") === location.pathname.replace(/^\//, "")
         ) {
             var anchor = $(this.hash);
             anchor = anchor.length ? anchor : $("[name=" + this.hash.slice(1) + "]");

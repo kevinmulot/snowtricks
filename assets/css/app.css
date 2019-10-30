@@ -68,7 +68,7 @@ h1.slogan {
 }
 
 .container .jumbotron {
-    border-radius: 0 !important;
+    border-radius: 0;
 }
 
 a img {
