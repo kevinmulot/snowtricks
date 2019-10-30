@@ -1,37 +1,54 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="jumbotron jumbotron-fluid text-center">
-        <div class="card card-image" style="">
-            <h1 class="display-4">SnowTricks</h1>
-            <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-        </div>
+    <div class="snowtrick w-100 h-100 overflow-hidden text-center">
+        <h1 class="slogan text-white">Show us your Best Tricks</h1>
     </div>
+    <a class="float-right jumbarrow" href="#tricklist" id="showlist">
+        <i class="fas fa-arrow-circle-down fa-3x"></i>
+    </a>
     <div class="container-fluid">
-
-        <div class="row">
-            {% for trick in trick %}
-                <div class="card col-md-2 col-sm-12 mt-4 mb-4 ml-2">
-                    <img class="card-img-top mt-2"
-                         src="{{ asset('/images/tricks/' ~ trick.mainPicture) | imagine_filter('my_thumb') }}"
-                         alt="Card image cap">
-
-                    <div class="card-body">
-                        <a class="card-title font-weight-bolder" href="{{ path('trick_view', {id: trick.id}) }}"
-                           class="btn btn-primary">{{ trick.name }}</a>
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a class="btn btnlink btn-primary btn-sm float-right"
-                               href="{{ path('trick_edit', {id: trick.id}) }}"><i
-                                        class="far fa-edit"></i> </a>
-                            <a class="btn btnlink btn-danger btn-sm float-right"
-                               href="{{ path('trick_delete', {id: trick.id}) }}">
-                                <i
-                                        class="fas fa-trash"></i></a>
-                        {% endif %}
+        <div class="tricklist mt-2" id="tricklist">
+            <div class="row col-12 justify-content mx-auto">
+                {% set i = null %}
+                {% for trick in trick %}
+                    {% set i = i+1 %}
+                    <div class="holdertrick col-lg-2 ml-lg-3 mr-lg-3 col-sm-6 mx-sm-auto col-md-6 mt-4 mb-3"
+                         id="tricks">
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="{{ asset('/images/tricks/' ~ trick.mainPicture) | imagine_filter('my_thumb') }}"
+                                 alt="Card image cap">
+                            <div class="card-body">
+                                <a class="card-title  text-center" href="{{ path('trick_view', {slug: trick.slug}) }}"
+                                   class="btn btn-primary">{{ trick.name|length >18 ? trick.name|slice(0,18) ~ '…' : trick.name }}</a>
+                            </div>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="custbuttons mb-1 mr-1 float-right">
+                                    <a class="btn btn-outline-primary shadow-sm btn-sm float-right"
+                                       href="javascript:void(0)"
+                                       onclick="{window.location='{{ path('trick_edit', {slug: trick.slug}) }}';}"><i
+                                                class="far fa-edit"></i> </a>
+                                    <a class="btn btn-outline-danger shadow-sm btn-sm mr-1 float-right"
+                                       href="javascript:void(0)"
+                                       onclick="if(confirm('Are you sure ?')){window.location='{{ path('trick_delete', {slug: trick.slug}) }}';}">
+                                        <i
+                                                class="fas fa-trash"></i></a>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="row">
+                {% if i>5 %}
+                    <button class=" col-12 btn btn-secondary font-weight-bold mb-3" id="loadMoreTricks">Load More
+                    </button>
+                {% endif %}
+                <a class="ml-auto uptricks mr-4 mt-3 mb-3" href="#tricks" id="uptricks">
+                    <i class="fas fa-arrow-circle-up fa-3x"></i>
+                </a>
+            </div>
         </div>
     </div>
-
 {% endblock %}
