@@ -1,5 +1,7 @@
 .idea/
-/public/images/
+/public/images/tricks/*
+/public/images/users/*
+!default.jpg
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -29,3 +31,8 @@ yarn-error.log
 ###> liip/imagine-bundle ###
 /public/media/cache/
 ###< liip/imagine-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
