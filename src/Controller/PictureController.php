@@ -14,24 +14,28 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class PictureController
+ * @package App\Controller
+ */
 class PictureController extends AbstractController
 {
     /**
      * @var ObjectManager
      */
-    private $em;
+    private $ema;
 
     /**
      * TrickController constructor.
-     * @param ObjectManager $em
+     * @param ObjectManager $ema
      */
-    public function __construct(ObjectManager $em)
+    public function __construct(ObjectManager $ema)
     {
-        $this->em = $em;
+        $this->ema = $ema;
     }
 
     /**
-     * @Route("/trick/media/{id}/{statut}", name="picture_new")
+     * @Route("/trick/media/{slug}/{statut}", name="picture_new")
      * @param Trick $trick
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -40,8 +44,10 @@ class PictureController extends AbstractController
     {
         $form = $this->createForm(PictureFormType::class);
         $form->handleRequest($request);
+
         $statut = $request->get('statut');
         if ($form->isSubmitted() && $form->isValid()) {
+            $statut = $request->get('statut');
             /** @var UploadedFile $pictureFile */
             $pictureFile = $form['picture']->getData();
             $picture = new Picture();
@@ -51,13 +57,13 @@ class PictureController extends AbstractController
             if ($statut === 'main') {
                 $picture->setStatut('main');
                 $trick->setMainPicture($pictureFileName);
-                $this->em->persist($picture);
-                $this->em->flush();
+                $this->ema->persist($picture);
+                $this->ema->flush();
 
-                return $this->redirectToRoute('trick_edit', array('id' => $trick->getId()));
+                return $this->redirectToRoute('trick_edit', array('slug' => $trick->getSlug()));
             }
-            $this->em->persist($picture);
-            $this->em->flush();
+            $this->ema->persist($picture);
+            $this->ema->flush();
         }
         $pictures = $trick->getPicture();
 
@@ -65,7 +71,7 @@ class PictureController extends AbstractController
     }
 
     /**
-     * @Route("/trick/picture/delete/{id}/{statut}", name="picture_delete")
+     * @Route("/admin/trick/picture/delete/{id}/{statut}", name="picture_delete")
      * @param Picture $picture
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -78,15 +84,15 @@ class PictureController extends AbstractController
             $trick = $picture->getTrick();
             $trick->setMainPicture('default.jpg');
         }
-        $this->em->remove($picture);
-        $this->em->flush();
+        $this->ema->remove($picture);
+        $this->ema->flush();
         $id = $picture->getTrick()->getId();
 
         return $this->redirectToRoute('trick_edit', array('id' => $id));
     }
 
     /**
-     * @Route("/trick/picture/edit/{id}/{statut}", name="picture_edit")
+     * @Route("/admin/trick/picture/edit/{id}/{statut}", name="picture_edit")
      * @param Picture $picture
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -106,9 +112,9 @@ class PictureController extends AbstractController
             }
             $picture->setName($pictureFileName);
             $fileUploader->remove($oldName);
-            $this->em->flush();
+            $this->ema->flush();
 
-            return $this->redirectToRoute('trick_edit', array('id' => $trick->getId()));
+            return $this->redirectToRoute('trick_edit', array('slug' => $trick->getSlug()));
         }
         return $this->render('media/pictures.html.twig', ['pictureForm' => $form->createView(), 'trick' => $trick, 'pictures' => $picture, 'statut' => $statut]);
     }
