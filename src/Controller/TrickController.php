@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Trick;
-use App\Entity\Picture;
 use App\Form\CommentFormType;
 use App\Form\TrickFormType;
 use App\Service\FileUploader;
@@ -23,40 +22,34 @@ class TrickController extends AbstractController
     /**
      * @var ObjectManager
      */
-    private $em;
+    private $ema;
 
     /**
      * TrickController constructor.
-     * @param ObjectManager $em
+     * @param ObjectManager $ema
      */
-    public function __construct(ObjectManager $em)
+    public function __construct(ObjectManager $ema)
     {
-        $this->em = $em;
+        $this->ema = $ema;
     }
 
     /**
-     * @Route("/tricks", name="tricks")
-     */
-    public function index()
-    {
-        return $this->render('/trick/tricks.html.twig');
-    }
-
-    /**
-     * @Route("/tricks/create", name="trick_create")
+     * @Route("/admin/tricks/create", name="trick_create")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function create(Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $trick = new Trick();
         $form = $this->createForm(TrickFormType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setDatePost(new \DateTime('now'));
-            $this->em->persist($trick);
-            $this->em->flush();
+            $this->ema->persist($trick);
+            $this->ema->flush();
+
             return $this->redirectToRoute('home');
         }
         return $this->render('trick/create.html.twig', [
@@ -64,65 +57,74 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/tricks/view/{id}", name="trick_view")
+     * @Route("/tricks/view/{slug}", name="trick_view")
      * @param Trick $trick
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function trickView(Request $request, Trick $trick)
     {
-        $comment = new Comment();
-        $form = $this->createForm(CommentFormType::class, $comment);
+        $form = $this->createForm(CommentFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment = new Comment();
+            $comment->setContent($form->get('content')->getData());
             $comment->setTrick($trick);
             $comment->setUser($this->getUser());
-            $this->em->persist($comment);
-            $this->em->flush();
+            $this->ema->persist($comment);
+            $this->ema->flush();
+
+            return $this->redirectToRoute('trick_view', ['slug' => $trick->getSlug()]);
         }
         $comments = $trick->getComment();
         $pictures = $trick->getPicture();
         $videos = $trick->getVideo();
-        return $this->render('trick/trick.view.html.twig', ['trick' => $trick, 'commentForm' => $form->createView(), 'comments' => $comments, 'pictures' => $pictures, 'videos' => $videos]);
+
+        return $this->render('trick/view.html.twig', ['trick' => $trick, 'commentForm' => $form->createView(), 'comments' => $comments, 'pictures' => $pictures, 'videos' => $videos]);
     }
 
     /**
-     * @Route("/tricks/delete/{id}", name="trick_delete")
+     * @Route("/admin/tricks/delete/{slug}", name="trick_delete")
      * @param Trick $trick
      */
     public function deleteTrick(Trick $trick, FileUploader $fileUploader)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $pictures = $trick->getPicture();
         foreach ($pictures as $picture) {
             /*@object Picture $picture */
             $name = $picture->getName();
             $fileUploader->remove($name);
         }
-        $this->em->remove($trick);
-        $this->em->flush();
+        $this->ema->remove($trick);
+        $this->ema->flush();
+
         return $this->redirect('/');
     }
 
     /**
-     * @Route("/trick/edit/{id}", name="trick_edit")
+     * @Route("/admin/trick/edit/{slug}", name="trick_edit")
      * @param Trick $trick
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function edit(Request $request, trick $trick)
-    {   $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $trickForm = $this->createForm(TrickFormType::class, $trick);
         $trickForm->handleRequest($request);
 
         if ($trickForm->isSubmitted() && $trickForm->isValid()) {
             $trick->setDateUpdate(new \DateTime('now'));
-            $this->em->flush();
-            return $this->redirectToRoute('trick_view', array('id' => $trick->getId()));
+            $this->ema->flush();
+
+            return $this->redirectToRoute('trick_view', array('slug' => $trick->getSlug()));
         }
         $pictures = $trick->getPicture();
         $videos = $trick->getVideo();
-        return $this->render('trick/trick.edit.html.twig', [
+
+        return $this->render('trick/edit.html.twig', [
             'trickForm' => $trickForm->createView(),
             'trick' => $trick, 'pictures' => $pictures, 'videos' => $videos]);
     }
