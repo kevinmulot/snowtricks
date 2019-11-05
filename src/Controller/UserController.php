@@ -8,6 +8,7 @@ use App\Form\ProfileFormType;
 use App\Form\UserEditFormType;
 use App\Repository\ProfileRepository;
 use App\Repository\UserRepository;
+use App\Service\FileUploader;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,15 +74,16 @@ class UserController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editProfile(Request $request, profile $profile)
+    public function editProfile(Request $request, profile $profile, FileUploader $fileUploader)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $fileUploader->removeUserPicture($profile->getImageName());
         $form = $this->createForm(profileFormType::class, $profile);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->ema->flush();
 
+            $this->addFlash('success', 'Profile picture updated !');
             return $this->profileView($profile->getUser());
         }
         return $this->render('user/profile.html.twig', [
@@ -102,7 +104,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->ema->flush();
-
+            $this->addFlash('success', 'Profile updated !');
             return $this->redirectToRoute('user', array('username' => $user->getUsername()));
         }
         return $this->render('user/edit.html.twig', [
@@ -113,9 +115,12 @@ class UserController extends AbstractController
      * @Route("/admin/user/delete/{username}", name="user_delete")
      * @param User $user
      */
-    public function deleteUser(User $user)
+    public function deleteUser(User $user, FileUploader $fileUploader)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $profile = $user->getProfile();
+        $fileName = $profile->getImageName();
+        $fileUploader->removeUserPicture($fileName);
         $this->ema->remove($user);
         $this->ema->flush();
 
@@ -126,9 +131,12 @@ class UserController extends AbstractController
      * @Route("/user/delete/{username}", name="account_delete")
      * @param User $user
      */
-    public function deleteAccount(User $user)
+    public function deleteAccount(User $user, FileUploader $fileUploader)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $profile = $user->getProfile();
+        $fileName = $profile->getImageName();
+        $fileUploader->removeUserPicture($fileName);
         $this->get('security.token_storage')->setToken(null);
         $this->ema->remove($user);
         $this->ema->flush();

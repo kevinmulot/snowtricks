@@ -44,18 +44,14 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
+        $this->addFlash('notice', 'You have been diconnected');
         throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
 
     /**
      * @Route("/forgottenPassword", name="app_forgotten_password")
      */
-    public function forgottenPassword(
-        Request $request,
-        UserPasswordEncoderInterface $encoder,
-        \Swift_Mailer $mailer,
-        TokenGeneratorInterface $tokenGenerator
-    ): Response
+    public function forgottenPassword(Request $request, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer, TokenGeneratorInterface $tokenGenerator): Response
     {
         $userInfo = ['username' => null];
         $form = $this->createForm(ForgottenPasswordFormType::class, $userInfo);
@@ -76,18 +72,16 @@ class SecurityController extends AbstractController
                 $entityManager->flush();
             } catch (\Exception $e) {
                 $this->addFlash('warning', $e->getMessage());
+
                 return $this->redirectToRoute('home');
             }
             $url = $this->generateUrl('app_reset_password', array('token' => $token), UrlGeneratorInterface::ABSOLUTE_URL);
             $message = (new \Swift_Message('Forgot Password'))
                 ->setFrom('noreply@snowtricks.com')
                 ->setTo($user->getEmail())
-                ->setBody(
-                    "Reset password link: " . $url,
-                    'text/html'
-                );
+                ->setBody("Reset password link: " . $url, 'text/html');
             $mailer->send($message);
-            $this->addFlash('notice', 'Mail sent');
+            $this->addFlash('notice', 'An Mail have been sent to the email address you provided.');
 
             return $this->redirectToRoute('home');
         }
@@ -119,7 +113,7 @@ class SecurityController extends AbstractController
             $entityManager->flush();
             $this->addFlash('notice', 'Password updated !');
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('app_login');
         }
         return $this->render('security/reset_password.html.twig', ['token' => $token,
             'resetPasswordForm' => $form->createView()]);

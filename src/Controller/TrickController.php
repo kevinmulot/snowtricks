@@ -46,11 +46,16 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $trick->setDatePost(new \DateTime('now'));
-            $this->ema->persist($trick);
-            $this->ema->flush();
-
-            return $this->redirectToRoute('home');
+            try {
+                $trick->setDatePost(new \DateTime('now'));
+                $this->ema->persist($trick);
+                $this->ema->flush();
+            } catch (\Exception $e) {
+                $this->addFlash('warning', 'Something went wrong ! Make sur the trick name does not exist.');
+                return $this->redirectToRoute('trick_create');
+            }
+            $this->addFlash('success', 'The Trick has been added, please add some medias and save.');
+            return $this->redirectToRoute('trick_edit', ['slug' => $trick->getSlug()]);
         }
         return $this->render('trick/create.html.twig', [
             'trickForm' => $form->createView()]);
@@ -94,12 +99,12 @@ class TrickController extends AbstractController
         $pictures = $trick->getPicture();
         foreach ($pictures as $picture) {
             /*@object Picture $picture */
-            $name = $picture->getName();
-            $fileUploader->remove($name);
+            $fileName = $picture->getName();
+            $fileUploader->removeTrickPictures($fileName);
         }
         $this->ema->remove($trick);
         $this->ema->flush();
-
+        $this->addFlash('danger', 'The Trick has been removed');
         return $this->redirect('/');
     }
 
@@ -118,7 +123,7 @@ class TrickController extends AbstractController
         if ($trickForm->isSubmitted() && $trickForm->isValid()) {
             $trick->setDateUpdate(new \DateTime('now'));
             $this->ema->flush();
-
+            $this->addFlash('notice', 'Modifications saved');
             return $this->redirectToRoute('trick_view', array('slug' => $trick->getSlug()));
         }
         $pictures = $trick->getPicture();
