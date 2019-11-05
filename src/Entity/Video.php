@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VideoRepository")
@@ -13,6 +14,11 @@ class Video
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Assert\Regex(
+     *     pattern="#^(http|https)://(www.youtube.com|youtu.be|www.dailymotion.com|dai.ly)/#",
+     *     match=true,
+     *     message="URL must be from Youtube or DailyMotion"
+     * )
      */
     private $id;
 
