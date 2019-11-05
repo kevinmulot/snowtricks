@@ -15,11 +15,34 @@
 
 <body>
 {% include 'base/header.html.twig' %}
-{% for message in app.flashes ('notice') %}
-    <div class="alert alert-success">
-        {{ message }}
-    </div>
-{% endfor %}
+{% set appFlashes = app.flashes %}
+<div class="hide-it text-center {{ appFlashes|length > 0 ? 'flash-message-block' : '' }}">
+    {% if appFlashes.success is defined %}
+        {% for message in appFlashes.success %}
+            <div class="alert alert-success my-0 flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% elseif appFlashes.danger is defined %}
+        {% for message in appFlashes.danger %}
+            <div class="alert alert-danger my-0 flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% elseif appFlashes.warning is defined %}
+        {% for message in appFlashes.warning %}
+            <div class="alert alert-warning my-0 flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% elseif appFlashes.notice is defined %}
+        {% for message in appFlashes.notice %}
+            <div class="alert alert-info my-0 flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
 
 <section>
     {% block body %}{% endblock %}
