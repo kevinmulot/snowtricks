@@ -35,7 +35,7 @@ class VideoController extends AbstractController
     public function __construct(VideoRepository $repository, ObjectManager $ema)
     {
         $this->repository = $repository;
-        $this->em = $ema;
+        $this->ema = $ema;
     }
 
     /**
