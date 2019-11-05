@@ -114,3 +114,7 @@ $(".openmodal").click(function () {
     $("#imagemodal img").attr("src", href);
     $("#imagemodal").modal("show");
 });
+
+$(function() {
+    $(".hide-it").hide(10000);
+});
