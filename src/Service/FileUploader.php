@@ -47,11 +47,27 @@ class FileUploader
         return $fileName;
     }
 
-    public function remove($fileName)
+    /**
+     * @param $fileName
+     */
+    public function removeTrickPictures($fileName)
     {
         $fsys = new Filesystem();
-        $fsys->remove('../public/images/tricks/' . $fileName);
-        $fsys->remove('../public/media/cache/my_thumb/images/tricks/' . $fileName);
+        if ($fileName != 'default.jpg') {
+            $fsys->remove('../public/images/tricks/' . $fileName);
+            $fsys->remove('../public/media/cache/my_thumb/images/tricks/' . $fileName);
+        }
+    }
+
+    /**
+     * @param $fileName
+     */
+    public function removeUserPicture($fileName)
+    {
+        $fsys = new Filesystem();
+        if ($fileName != 'default.jpg') {
+            $fsys->remove('../public/media/cache/my_thumb/images/users/' . $fileName);
+        }
     }
 
     /**

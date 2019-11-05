@@ -11,30 +11,35 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class VideoController
+ * @package App\Controller
+ */
 class VideoController extends AbstractController
 {
     /**
      * @var VideoRepository
      */
     private $repository;
+
     /**
      * @var ObjectManager
      */
-    private $em;
+    private $ema;
 
     /**
      * VideosController constructor.
      * @param VideoRepository $repository
-     * @param ObjectManager $em
+     * @param ObjectManager $ema
      */
-    public function __construct(VideoRepository $repository, ObjectManager $em)
+    public function __construct(VideoRepository $repository, ObjectManager $ema)
     {
         $this->repository = $repository;
-        $this->em = $em;
+        $this->ema = $ema;
     }
 
     /**
-     * @Route("/video/add/{id}", name="video_new")
+     * @Route("/admin/video/add/{slug}", name="video_new")
      * @param Trick $trick
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -43,7 +48,6 @@ class VideoController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $video = new Video();
-
         $form = $this->createForm(VideoFormType::class, $video);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -58,30 +62,32 @@ class VideoController extends AbstractController
                 }
                 $video->setUrl($newUrl);
                 $video->setTrick($trick);
-                $this->em->persist($video);
-                $this->em->flush();
+                $this->ema->persist($video);
+                $this->ema->flush();
                 $this->addFlash('success', 'Video correctly update');
-                return $this->redirectToRoute('trick_edit', array('id' => $trick->getId()));
+
+                return $this->redirectToRoute('trick_edit', array('slug' => $trick->getSlug()));
             }
             $this->addFlash('danger', 'URL must be from Youtube or DailyMotion');
-            return $this->redirectToRoute('video_new', array('id' => $trick->getId()));
+
+            return $this->redirectToRoute('video_new', array('slug' => $trick->getSlug()));
         }
 
         return $this->render('media/videos.html.twig', ['videoForm' => $form->createView(), 'trick' => $trick]);
     }
 
     /**
-     * @Route("/trick/video/delete/{id}", name="video_delete")
+     * @Route("/admin/trick/video/delete/{id}", name="video_delete")
      * @param Video $video
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function deleteVideo(Video $video)
     {
-        $this->em->remove($video);
-        $this->em->flush();
-        $id = $video->getTrick()->getId();
+        $this->ema->remove($video);
+        $this->ema->flush();
+        $slug = $video->getTrick()->getId();
 
-        return $this->redirectToRoute('trick_edit', array('id' => $id));
+        return $this->redirectToRoute('trick_edit', array('slug' => $slug));
     }
 
     /**
@@ -107,9 +113,10 @@ class VideoController extends AbstractController
                     $newUrl = "https://www.dailymotion.com/embed/video/$dailymotionMatch[1]";
                 }
                 $video->setUrl($newUrl);
-                $this->em->flush();
+                $this->ema->flush();
                 $this->addFlash('success', 'Video correctly update');
-                return $this->redirectToRoute('trick_edit', array('id' => $video->getTrick()->getId()));
+
+                return $this->redirectToRoute('trick_edit', array('slug' => $video->getTrick()->getSlug()));
             }
         }
         return $this->render('media/videos.html.twig', ['videoForm' => $form->createView()]);

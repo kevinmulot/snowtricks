@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tricks{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="font-weight-normal text-center mt-2 mb-2">Manage Users</h1>
+        <div class="table-responsive table-hover mt-4">
+            <table class="table text-center">
+                <thead class="thead-light">
+                <tr>
+                    <th class="col" scope="col">Accounts</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td><b>Username : </b>{{ user.username }}<br><b>Email : </b>{{ user.email }}
+                            <br>
+                            {% if user.username != app.user.username %}
+                                <div class="mt-1">
+                                    <a class="btn btnlink btn-sm btn-outline-danger"
+                                       href="javascript:void(0)"
+                                       onclick="if(confirm('Are you sure ?')){window.location='{{ path('user_delete', {username: user.username}) }}';}">Delete
+                                        <i
+                                                class="fas fa-trash"></i></a>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

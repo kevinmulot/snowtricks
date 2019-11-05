@@ -21,17 +21,17 @@ class HomeController extends AbstractController
     /**
      * @var ObjectManager
      */
-    private $em;
+    private $ema;
 
     /**
      * UserController constructor.
      * @param TrickRepository $Repository
-     * @param ObjectManager $em
+     * @param ObjectManager $ema
      */
-    public function __construct(TrickRepository $Repository, ObjectManager $em)
+    public function __construct(TrickRepository $Repository, ObjectManager $ema)
     {
         $this->trickRepository = $Repository;
-        $this->em = $em;
+        $this->ema = $ema;
     }
 
     /**

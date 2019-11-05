@@ -23,7 +23,7 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=45)
+     * @ORM\Column(type="string", unique=true, nullable=false, length=45)
      */
     private $username;
 
@@ -38,14 +38,14 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user", orphanRemoval=true)
      * @param Collection
      */
     private $comment;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Profile", mappedBy="user", cascade="persist")
-     * @ORM\JoinColumn(name="profile_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="App\Entity\Profile", mappedBy="user", cascade={"persist"}, cascade={"remove"})
+     *
      */
     private $profile;
 
@@ -65,6 +65,7 @@ class User implements UserInterface
         $this->comment = new ArrayCollection();
         $this->profile = new ArrayCollection();
     }
+
     /**
      * @return Collection
      */
@@ -165,11 +166,11 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
-    $roles = $this->roles;
-    // guarantee every user at least has ROLE_USER
-    $roles[] = 'ROLE_USER';
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
 
-    return array_unique($roles);
+        return array_unique($roles);
     }
 
     /**

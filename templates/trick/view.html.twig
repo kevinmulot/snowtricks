@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ trick.name }}{% endblock %}
+
+{% block body %}
+    <div class="img-fluid trickpic"
+         style="background-image: url({{ asset('/images/tricks/' ~ trick.mainPicture) }})">
+        <div class="d-flex ml-auto col-1">
+            {% if is_granted('ROLE_ADMIN') %}
+                <a class="btn btn-primary shadow btn-sm btnfloat1"
+                   href="javascript:void(0)"
+                   onclick="{window.location='{{ path('trick_edit', {slug: trick.slug}) }}';}"><i
+                            class="far fa-edit"></i></a>
+                <a class="btn btn-danger shadow btn-sm btnfloat2"
+                   href="javascript:void(0)"
+                   onclick="if(confirm('Are you sure ?')){window.location='{{ path('trick_delete', {slug: trick.slug}) }}';}">
+                    <i
+                            class="fas fa-trash"></i></a>
+            {% endif %}
+        </div>
+        <div class=" text-center py-5 px-4 my-5">
+            <h2 class="card-title text-white h1-responsive pt-3 mb-5 font-bold"><b>{{ trick.name }}</b>
+            </h2>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% set i = null %}
+        <div class="media" id="medias">
+            <div class="row col-12 mx-sm-auto justify-content-md">
+                {% for picture in pictures %}
+                    {% if picture.statut == 'normal' %}
+                        {% set i = i+1 %}
+                        <div class="card border-0 holder col-md-2 col-sm-10 mt-4 mb-4">
+                            <a href="#" data-href="{{ asset('/images/tricks/' ~ picture.name) }}" class="openmodal">
+                                <img class="card-img-top"
+                                     src="{{ asset('/images/tricks/' ~ picture.name) | imagine_filter('my_thumb') }}"
+                                     alt="Trick picture">
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% for video in videos %}
+                    {% set i = i+1 %}
+                    <iframe class="col-md-2 col-sm-12 mt-4 mb-4 h-100 js-media holder border-0"
+                            src="{{ video.url }}"
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                {% endfor %}
+                {% if i>6 %}
+                    <div class="mx-auto">
+                        <button class="btn btn-secondary shadow-sm" id="loadMoreMedia">Load More</button>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+        {% if i >0 %}
+            <div class="text-center mt-4 mb-4">
+                <a id="show" href="#medias" class="btn btn-secondary rounded shadow-sm d-md-none">See medias</a>
+            </div>
+        {% endif %}
+    </div>
+    <div class="modal fade " id="imagemodal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <img src="" class="img-fluid" alt="Trick picture"/>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="trickcontent mt-3">
+            <h3>Description :</h3>
+            <p class="text-justify mt-3 mb-3">{{ trick.content | nl2br }}</p>
+            <p class="text-center mt-4 mb-4 font-weight-light font-italic"><span
+                        class="rounded border"> Published : {{ trick.datepost| date("d/m/Y") }} </span><span
+                        class="rounded border ml-2">{% if trick.dateupdate != null %} Updated : {{ trick.dateupdate| date("d/m/Y") }} {% endif %}</span>
+                <span class="rounded border ml-2"> Category : {{ trick.category }} </span></p>
+        </div>
+        {% if app.user %}
+            <hr>
+            <div class="row text-center">
+                <div class="col-lg-9 col-sm-12">{{ form_start(commentForm) }}
+                    {{ form_row(commentForm.content, {'attr': {'rows': '1'}}) }}</div>
+                <div class="col-lg-3 col-sm-12">{{ form_row(commentForm.submit) }}
+                    {{ form_end(commentForm) }}</div>
+            </div>
+            <hr>
+        {% endif %}
+        <div class="row">
+            {% set k = null %}
+            {% for comment in comments %}
+                {% set k = k+1 %}
+                <div class="holdercomments mb-3 col-12">
+                    <div class="float-left profilepic">
+                        {% if comment.user.profile.imagename is not null %}
+                            <img class="img-fluid mt-3 rounded-circle"
+                                 src="{{ asset('/images/users/' ~ comment.user.profile.imagename) | imagine_filter('my_thumb') }}"
+                                 alt="profile picture">
+                        {% else %}
+                            <img class="img-fluid mt-3 rounded-circle"
+                                 src="{{ asset('/images/users/default.jpg') | imagine_filter('my_thumb') }}"
+                                 alt="profile picture">
+                        {% endif %}
+                    </div>
+                    <div class="float-left ml-4 col-10 comment border">
+                        {% if app.user.id is defined %}
+                            {% if is_granted('ROLE_ADMIN') or comment.user.id == app.user.id %}
+                                <a class="btn btn-outline-dark shadow-sm btn-sm mt-2 mr-1 float-right"
+                                   href="{{ path('comment_delete', {id: comment.id}) }}">
+                                    <i
+                                            class="fas fa-trash"></i></a>
+                            {% endif %}
+                        {% endif %}
+                        <br><b>{{ comment.user.username }} : </b>
+                        <p class="text-justify">{{ comment.content | nl2br }}</p>
+                        <em class="float-right">{{ comment.adddate| date("d/m/Y G:i") }}</em>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if k>5 %}
+                <button class="btn btn-secondary shadow-sm mx-auto mb-3" id="loadMoreComments">Load More</button>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

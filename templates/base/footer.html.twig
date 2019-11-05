@@ -1,5 +1,20 @@
 {% block footer %}
-    <footer class="footer mt-auto">
-        <span class="h4">Copyright &#169;Keimuo 2019</span>
+    <footer class="footer">
+        <br>
+        <span class="h5 mt-3">Copyright &#169;Keimuo 2019</span>
     </footer>
+    <div class="navbarbot  navbar d-md-none fixed-bottom" id="navbarbot">
+        <a href="/"><i class="fas fa-home"></i></a>
+        {% if app.user %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('trick_create') }}"><i class="fas fa-plus"></i></a>
+                <a href="{{ path('users') }}"><i class="fas fa-user-cog"></i></a>
+            {% endif %}
+            <a href="{{ path('user', { username: app.user.username }) }}"><i class="fas fa-user-circle"></i></a>
+            <a href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i></a>
+        {% else %}
+            <a href="{{ path('app_register') }}"><i class="far fa-user-circle"></i></a>
+            <a href="{{ path('app_login') }}"><i class="fas fa-sign-in-alt"></i></a>
+        {% endif %}
+    </div>
 {% endblock %}

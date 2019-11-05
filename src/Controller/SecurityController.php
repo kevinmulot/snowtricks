@@ -15,6 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
+/**
+ * Class SecurityController
+ * @package App\Controller
+ */
 class SecurityController extends AbstractController
 {
     /**
@@ -40,18 +44,14 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
+        $this->addFlash('notice', 'You have been diconnected');
         throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
 
     /**
      * @Route("/forgottenPassword", name="app_forgotten_password")
      */
-    public function forgottenPassword(
-        Request $request,
-        UserPasswordEncoderInterface $encoder,
-        \Swift_Mailer $mailer,
-        TokenGeneratorInterface $tokenGenerator
-    ): Response
+    public function forgottenPassword(Request $request, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer, TokenGeneratorInterface $tokenGenerator): Response
     {
         $userInfo = ['username' => null];
         $form = $this->createForm(ForgottenPasswordFormType::class, $userInfo);
@@ -72,18 +72,16 @@ class SecurityController extends AbstractController
                 $entityManager->flush();
             } catch (\Exception $e) {
                 $this->addFlash('warning', $e->getMessage());
+
                 return $this->redirectToRoute('home');
             }
             $url = $this->generateUrl('app_reset_password', array('token' => $token), UrlGeneratorInterface::ABSOLUTE_URL);
             $message = (new \Swift_Message('Forgot Password'))
                 ->setFrom('noreply@snowtricks.com')
                 ->setTo($user->getEmail())
-                ->setBody(
-                    "Reset password link: " . $url,
-                    'text/html'
-                );
+                ->setBody("Reset password link: " . $url, 'text/html');
             $mailer->send($message);
-            $this->addFlash('notice', 'Mail sent');
+            $this->addFlash('notice', 'An Mail have been sent to the email address you provided.');
 
             return $this->redirectToRoute('home');
         }
@@ -101,19 +99,21 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() and $form->isValid()) {
             $plainPassword = $form->get('plainPassword')->getData();
+            $username = $form->get('username')->getData();
             $entityManager = $this->getDoctrine()->getManager();
             $user = $entityManager->getRepository(User::class)->findOneBy(['resetToken' => $token]);
             /* @var $user User */
-            if ($user === null) {
-                $this->addFlash('danger', 'Token Inconnu');
+            if ($user === null or $username != $user->getUsername()) {
+                $this->addFlash('danger', 'Unknown User');
+
                 return $this->redirectToRoute('home');
             }
             $user->setResetToken(null);
             $user->setPassword($passwordEncoder->encodePassword($user, $plainPassword));
             $entityManager->flush();
-            $this->addFlash('notice', 'Mot de passe mis à jour');
+            $this->addFlash('notice', 'Password updated !');
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('app_login');
         }
         return $this->render('security/reset_password.html.twig', ['token' => $token,
             'resetPasswordForm' => $form->createView()]);

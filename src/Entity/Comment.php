@@ -39,6 +39,13 @@ class Comment
      * @ORM\JoinColumn(name="trick_id", referencedColumnName="id")
      */
     private $trick;
+
+    public function __construct()
+    {
+        $this->addDate = new \DateTime('now');
+        $this->user = new ArrayCollection();
+    }
+
     /**
      * @return Collection
      */
@@ -63,11 +70,14 @@ class Comment
         $this->trick = $trick;
     }
 
-    public function __construct()
+    /**
+     * @return mixed
+     */
+    public function getTrick()
     {
-        $this->addDate = new \DateTime('now');
-        $this->user = new ArrayCollection();
+        return $this->trick;
     }
+
 
     /**
      * @return int|null
@@ -102,16 +112,5 @@ class Comment
     public function getAddDate(): ?\DateTimeInterface
     {
         return $this->addDate;
-    }
-
-    /**
-     * @param \DateTimeInterface $addDate
-     * @return Comment
-     */
-    public function setAddDate(\DateTimeInterface $addDate): self
-    {
-        $this->addDate = $addDate;
-
-        return $this;
     }
 }

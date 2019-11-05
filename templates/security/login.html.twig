@@ -1,36 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Sign in{% endblock %}
 
 {% block body %}
-    <div class="container">
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+    <div class="container ">
+        <div class="row justify-content-center">
+            <h1 class="h1 col-12 mb-3 mt-3 font-weight-normal text-center d-md-block d-none">Sign in</h1>
+            <form class="border text-center mt-4 col-8" method="post">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+                <h1 class="h1 mb-3 mt-3 font-weight-normal text-center d-none d-sm-block d-block d-md-none">Please sign
+                    in</h1>
+                <label for="inputUsername" class="mt-2">Username</label>
+                <input type="text" value="{{ last_username }}" name="username" id="inputUsername"
+                       class="form-control text-center"
+                       required autofocus>
+                <label for="inputPassword" class="mt-2">Password</label>
+                <input type="password" name="password" id="inputPassword" class="form-control text-center"
+                       required>
+                <input type="hidden" name="_csrf_token"
+                       value="{{ csrf_token('authenticate') }}">
+                <div class="checkbox mb-2">
+                    <label>
+                        <input type="checkbox" name="_remember_me"> Remember me
+                    </label>
+                </div>
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control"
-               placeholder="Username" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}"
-        >
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
+                <button class="btn btn-lg btn-primary mb-3 mt-4" type="submit">
+                    Login
+                </button>
+                <div>
+                    <a href="{{ path('app_forgotten_password') }}">Forgotten password ?</a>
+                </div>
+                <div>
+                    <a href="{{ path('app_register') }}">I don't have an account</a>
+                </div>
+            </form>
         </div>
-
-        <div>
-            <a href="{{ path('app_forgotten_password') }}">Forgotten password</a>
-        </div>
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
-    </form>
     </div>
 {% endblock %}
