@@ -43,11 +43,14 @@
     "vich/uploader-bundle": "^1.10"
   },
   "require-dev": {
+    "symfony/browser-kit": "4.3.*",
+    "symfony/css-selector": "4.3.*",
     "symfony/debug-bundle": "4.3.*",
     "symfony/debug-pack": "*",
     "symfony/maker-bundle": "^1.13",
+    "symfony/phpunit-bridge": "^4.3",
     "symfony/profiler-pack": "*",
-    "symfony/test-pack": "*",
+    "symfony/test-pack": "^1.0",
     "symfony/var-dumper": "4.3.*",
     "symfony/web-server-bundle": "4.3.*"
   },
