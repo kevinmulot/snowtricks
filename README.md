@@ -25,19 +25,19 @@ My sixth OpenClassRooms Project with PHP/Symphony.
 
 [https://symfony.com/doc/current/setup.html](https://symfony.com/doc/current/setup.html)
 
-### 3 - Install Webpack Encore
-[Install](https://symfony.com/doc/current/frontend/encore/installation.html)
-
-[Build, Recompile & Deploy](https://symfony.com/doc/current/frontend/encore/simple-example.html)
-
-### 4 - Import Database
+### 3 - Import Database
 An SQL sample file can be find in the root directory.
 
-### 5 - Modify Connection in .env
+### 4 - Modify Connection in .env
 *You will find the .env file in the root directory.*
 *   Edit line 27 in file with your database details.
 *   Edit line 34 in file with your smtp details.
 *   Edit line 17 in file from dev to prod if you want to deploy it to prod.
+
+### 5 - Install Webpack Encore
+[Install](https://symfony.com/doc/current/frontend/encore/installation.html)
+
+[Build, Recompile & Deploy](https://symfony.com/doc/current/frontend/encore/simple-example.html)
 
 ---
 
