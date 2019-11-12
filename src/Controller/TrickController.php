@@ -44,17 +44,17 @@ class TrickController extends AbstractController
         $trick = new Trick();
         $form = $this->createForm(TrickFormType::class, $trick);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $trick->setDatePost(new \DateTime('now'));
                 $this->ema->persist($trick);
                 $this->ema->flush();
             } catch (\Exception $e) {
                 $this->addFlash('warning', 'Something went wrong ! Make sur the trick name does not exist.');
+
                 return $this->redirectToRoute('trick_create');
             }
             $this->addFlash('success', 'The Trick has been added, please add some medias and save.');
+
             return $this->redirectToRoute('trick_edit', ['slug' => $trick->getSlug()]);
         }
         return $this->render('trick/create.html.twig', [
@@ -71,7 +71,6 @@ class TrickController extends AbstractController
     {
         $form = $this->createForm(CommentFormType::class);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $comment = new Comment();
             $comment->setContent($form->get('content')->getData());
@@ -100,11 +99,12 @@ class TrickController extends AbstractController
         foreach ($pictures as $picture) {
             /*@object Picture $picture */
             $fileName = $picture->getName();
-            $fileUploader->removeTrickPictures($fileName);
+            $fileUploader->removeTrickPicture($fileName);
         }
         $this->ema->remove($trick);
         $this->ema->flush();
         $this->addFlash('danger', 'The Trick has been removed');
+
         return $this->redirect('/');
     }
 
@@ -119,11 +119,11 @@ class TrickController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $trickForm = $this->createForm(TrickFormType::class, $trick);
         $trickForm->handleRequest($request);
-
         if ($trickForm->isSubmitted() && $trickForm->isValid()) {
             $trick->setDateUpdate(new \DateTime('now'));
             $this->ema->flush();
             $this->addFlash('notice', 'Modifications saved');
+
             return $this->redirectToRoute('trick_view', array('slug' => $trick->getSlug()));
         }
         $pictures = $trick->getPicture();

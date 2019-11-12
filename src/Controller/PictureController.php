@@ -44,8 +44,6 @@ class PictureController extends AbstractController
     {
         $form = $this->createForm(PictureFormType::class);
         $form->handleRequest($request);
-
-        $statut = $request->get('statut');
         if ($form->isSubmitted() && $form->isValid()) {
             $statut = $request->get('statut');
             /** @var UploadedFile $pictureFile */
@@ -57,17 +55,14 @@ class PictureController extends AbstractController
             if ($statut === 'main') {
                 $picture->setStatut('main');
                 $trick->setMainPicture($pictureFileName);
-                $this->ema->persist($picture);
-                $this->ema->flush();
-
-                return $this->redirectToRoute('trick_edit', array('slug' => $trick->getSlug()));
             }
             $this->ema->persist($picture);
             $this->ema->flush();
-        }
-        $pictures = $trick->getPicture();
 
-        return $this->render('media/pictures.html.twig', ['pictureForm' => $form->createView(), 'trick' => $trick, 'pictures' => $pictures, 'statut' => $statut]);
+            return $this->redirectToRoute('trick_edit', array('slug' => $trick->getSlug()));
+        }
+
+        return $this->render('media/pictures.html.twig', ['pictureForm' => $form->createView()]);
     }
 
     /**
@@ -79,16 +74,15 @@ class PictureController extends AbstractController
     public function deletePicture(Request $request, Picture $picture, FileUploader $fileUploader)
     {
         $statut = $request->get('statut');
-        $fileUploader->remove($picture->getName());
+        $trick = $picture->getTrick();
+        $fileUploader->removeTrickPicture($picture->getName());
         if ($statut === 'main') {
-            $trick = $picture->getTrick();
             $trick->setMainPicture('default.jpg');
         }
         $this->ema->remove($picture);
         $this->ema->flush();
-        $id = $picture->getTrick()->getId();
 
-        return $this->redirectToRoute('trick_edit', array('id' => $id));
+        return $this->redirectToRoute('trick_edit', array('slug' => $trick->getSlug()));
     }
 
     /**
@@ -111,7 +105,7 @@ class PictureController extends AbstractController
                 $trick->setMainPicture($pictureFileName);
             }
             $picture->setName($pictureFileName);
-            $fileUploader->remove($oldName);
+            $fileUploader->removeTrickPicture($oldName);
             $this->ema->flush();
 
             return $this->redirectToRoute('trick_edit', array('slug' => $trick->getSlug()));

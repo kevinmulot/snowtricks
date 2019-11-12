@@ -43,21 +43,33 @@ img.img-fluid.rounded-circle {
 
 }
 
+.modal-dialog {
+    position: relative;
+    display: table; /* This is important */
+    overflow-y: auto;
+    overflow-x: auto;
+    width: auto;
+    min-width: 300px;
+}
+
 h1.slogan {
-    text-shadow: black 0.1em 0.1em 0.2em;
     margin-top: 30vh;
+}
+
+h2 b, h1.slogan {
+    text-shadow: black 0.1em 0.1em 0.2em;
 }
 
 .btnfloat1 {
     position: absolute;
     top: 2vh;
-    right: 4vh;
+    right: 2vh;
 }
 
 .btnfloat2 {
     position: absolute;
     top: 2vh;
-    right: 10vh;
+    right: 11vh;
 }
 
 .trickpic {
@@ -121,5 +133,10 @@ img.logo {
     .navbarbot a.active {
         background-color: #4CAF50;
         color: white;
+    }
+
+    img.img-fluid.rounded-circle {
+        width: 25px;
+        height: 25px;
     }
 }

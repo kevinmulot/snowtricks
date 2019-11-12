@@ -58,11 +58,7 @@ class UserController extends AbstractController
      */
     public function profileView(User $user)
     {
-        // usually you'll want to make sure the user is authenticated first
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        // returns your User object, or null if the user is not authenticated
-        // use inline documentation to tell your editor your exact User class
         $profile = $user->getProfile();
 
         return $this->render('user/index.html.twig', array('profile' => $profile));
@@ -101,7 +97,6 @@ class UserController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $form = $this->createForm(UserEditFormType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->ema->flush();
             $this->addFlash('success', 'Profile updated !');
