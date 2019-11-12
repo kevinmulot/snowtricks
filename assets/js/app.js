@@ -116,5 +116,5 @@ $(".openmodal").click(function () {
 });
 
 $(function() {
-    $(".hide-it").hide(10000);
+    $(".hide-it").fadeOut(8000);
 });
