@@ -64,7 +64,7 @@ class VideoController extends AbstractController
                 $video->setTrick($trick);
                 $this->ema->persist($video);
                 $this->ema->flush();
-                $this->addFlash('success', 'Video correctly update');
+                $this->addFlash('success', 'Video correctly added');
 
                 return $this->redirectToRoute('trick_edit', array('slug' => $trick->getSlug()));
             }
@@ -99,7 +99,6 @@ class VideoController extends AbstractController
     public function updateVideo(Request $request, Video $video)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
         $form = $this->createForm(VideoFormType::class, $video);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -114,7 +113,7 @@ class VideoController extends AbstractController
                 }
                 $video->setUrl($newUrl);
                 $this->ema->flush();
-                $this->addFlash('success', 'Video correctly update');
+                $this->addFlash('success', 'Video correctly updated');
 
                 return $this->redirectToRoute('trick_edit', array('slug' => $video->getTrick()->getSlug()));
             }

@@ -50,6 +50,11 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/forgottenPassword", name="app_forgotten_password")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     * @param \Swift_Mailer $mailer
+     * @param TokenGeneratorInterface $tokenGenerator
+     * @return Response
      */
     public function forgottenPassword(Request $request, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer, TokenGeneratorInterface $tokenGenerator): Response
     {
@@ -77,7 +82,7 @@ class SecurityController extends AbstractController
             }
             $url = $this->generateUrl('app_reset_password', array('token' => $token), UrlGeneratorInterface::ABSOLUTE_URL);
             $message = (new \Swift_Message('Forgot Password'))
-                ->setFrom('noreply@snowtricks.com')
+                ->setFrom('noreply@keimuo.com')
                 ->setTo($user->getEmail())
                 ->setBody("Reset password link: " . $url, 'text/html');
             $mailer->send($message);

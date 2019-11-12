@@ -45,8 +45,7 @@ class CommentController extends AbstractController
         $this->ema->remove($comment);
         $this->ema->flush();
         $trick = $comment->getTrick();
-        $idy = $trick->getId();
 
-        return $this->redirectToRoute('trick_view', array('id' => $idy));
+        return $this->redirectToRoute('trick_view', array('slug' => $trick->getSlug()));
     }
 }

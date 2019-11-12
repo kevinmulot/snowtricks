@@ -35,10 +35,7 @@ class FileUploader
      */
     public function upload(UploadedFile $file)
     {
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $fileName = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-
+        $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
         try {
             $file->move($this->getTargetDirectory(), $fileName);
         } catch (FileException $e) {
@@ -50,7 +47,7 @@ class FileUploader
     /**
      * @param $fileName
      */
-    public function removeTrickPictures($fileName)
+    public function removeTrickPicture($fileName)
     {
         $fsys = new Filesystem();
         if ($fileName != 'default.jpg') {
