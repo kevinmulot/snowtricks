@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -76,7 +77,7 @@ class Trick
      */
     public function __construct()
     {
-        $this->datePost = new \DateTime('now');
+        $this->datePost = new DateTime('now');
         $this->comment = new ArrayCollection();
         $this->picture = new ArrayCollection();
         $this->Video = new ArrayCollection();
@@ -105,14 +106,6 @@ class Trick
     public function getComment()
     {
         return $this->comment;
-    }
-
-    /**
-     * @param mixed $comment
-     */
-    public function setComment($comment): void
-    {
-        $this->comment = $comment;
     }
 
     /**
@@ -202,14 +195,6 @@ class Trick
     public function getDatePost()
     {
         return $this->datePost;
-    }
-
-    /**
-     * @param mixed $datePost
-     */
-    public function setDatePost($datePost): void
-    {
-        $this->datePost = $datePost;
     }
 
     /**
