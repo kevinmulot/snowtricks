@@ -26,6 +26,7 @@ class ProfileFormType extends AbstractType
             ->add('imageFile', VichImageType::class, [
                 'label' => 'Profile Picture',
                 'required' => false,
+                'allow_delete' => false,
                 'download_link' => false,
                 'constraints' => [
                     new File([
