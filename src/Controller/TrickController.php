@@ -124,7 +124,7 @@ class TrickController extends AbstractController
             $this->ema->flush();
             $this->addFlash('notice', 'Modifications saved');
 
-            return $this->redirectToRoute('trick_view', array('slug' => $trick->getSlug()));
+            return $this->redirectToRoute('home');
         }
         $pictures = $trick->getPicture();
         $videos = $trick->getVideo();
